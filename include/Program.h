@@ -12,7 +12,7 @@ class Program
     public:
         Program();
         virtual ~Program();
-        int run();
+        int run(char* input_file_name_in, char* output_file_name_in);
     protected:
     private:
 };

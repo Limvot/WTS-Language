@@ -10,7 +10,7 @@ Program::~Program()
     //dtor
 }
 
-int Program::run()
+int Program::run(char* input_file_name_in, char* output_file_name_in)
 {
     std::string input_file_name;
     std::string output_file_name;
@@ -23,10 +23,9 @@ int Program::run()
     WTS_Parser parser;
 
     //Get the file!
-
+    input_file_name = input_file_name_in;
     std::cout << "Hello! Welcome to the WTS (Way Too Simple) Language compiler!" << std::endl;
-    std::cout << "Please input the name of the file you wish to compile:";
-    std::cin >> input_file_name;
+    std::cout << "You have chosen to compile the file: " << input_file_name << "\n";
 
     input_file.open(input_file_name.c_str());
     if (!input_file.is_open())
@@ -35,9 +34,8 @@ int Program::run()
         return 1;
     }
 
-    std::cout << "Please input the name of the file you wish to which you want to save the compiled code:";
-    std::cin >> output_file_name;
-
+    output_file_name = output_file_name_in;
+    std::cout << "You have chosen to output the compiled code to: " << output_file_name << "\n";
     output_file.open(output_file_name.c_str());
     if (!output_file.is_open())
     {
@@ -64,6 +62,8 @@ int Program::run()
 
     output_file << output_CPP;
     output_file.close();
+
+    std::cout << "Program has been sucessfuly compiled into C++ and saved!\n";
 
     return 0;
 }

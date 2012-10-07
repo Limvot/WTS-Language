@@ -32,7 +32,6 @@ std::string string_reader::line()
 {
     int found_pos = 0;
     found_pos = rd_string.find("\n", str_pos);
-    std::cout << "Position is " << found_pos << std::endl;
 
     if (found_pos == str_pos)                                   //We are at the endline
     {

@@ -30,11 +30,16 @@ int WTS_Parser::parse()
         if (current_line == "")                                     //Reached end-of-file
         {
             reached_end = true;
+        } else if (current_line[0] == '#')                          //If comment
+        {
+            cpp_output.append("//" + current_line);
+
         } else {
             cpp_output.append(current_line);
-            std::cout << cpp_output << std::endl;
         }
     }
+
+    std::cout << "Done parsing!\n";
 
     return 0;
 }
