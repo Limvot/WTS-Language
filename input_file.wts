@@ -1,0 +1,14 @@
+
+#Print Hello World! Function, to demonstrate function creation
+begin print_hello_func
+
+print "Hello World!"
+
+end print_hello_func
+
+#Main Function, entrence point of program
+begin main
+
+go print_hello_func
+
+end main
