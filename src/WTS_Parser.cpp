@@ -54,205 +54,119 @@ std::string WTS_Parser::getCPP()
     return cpp_output;
 }
 
+
 void WTS_Parser::do_token(std::string token)
 {
-    switch (wts_KeyWordsMap[token]) //Look up the word in the keywordmap
+    //Look up the word in the keywordmap, call assoicated function pointer with argument token
+    void(WTS_Parser::* function_pointer)(std::string) = wts_KeyWordsMap[token];
+    if (function_pointer != 0)
     {
-        case wts_begin_function:
-            cpp_output += "int " + reader.word() + "() {\n";
-            break;
-
-        case wts_end_function:
-            cpp_output += "return 0;\n}\n";
-            break;
-
-        case wts_go_function:
-            cpp_output += reader.word() + "();\n";
-            break;
-
-        case wts_print:
-            cpp_output += "std::cout << " + reader.line() + ";\n";
-            break;
-
-        case wts_integer:
-            cpp_output += "int " + reader.word() + ";\n";
-            break;
-
-        case wts_unsigned_integer:
-            cpp_output += "unsigned int " + reader.word() + ";\n";
-            break;
-
-        case wts_floating_point:
-            cpp_output += "float " + reader.word() + ";\n";
-            break;
-
-        case wts_boolean:
-            cpp_output += "bool " + reader.word() + ";\n";
-            break;
-
-        case wts_equals:
-        {
-            cpp_output += reader.word() + " = ";
-            next_token = reader.word();
-            switch (wts_KeyWordsMap[next_token]) {
-                case wts_plus:
-                    cpp_output += reader.word() + " + ";
-                    cpp_output += reader.word() + ";\n";
-                    break;
-
-                case wts_minus:
-                    cpp_output += reader.word() + " - ";
-                    cpp_output += reader.word() + ";\n";
-                    break;
-
-                case wts_times:
-                    cpp_output += reader.word() + " * ";
-                    cpp_output += reader.word() + ";\n";
-                    break;
-
-                case wts_divide:
-                    cpp_output += reader.word() + " / ";
-                    cpp_output += reader.word() + ";\n";
-                    break;
-
-                case wts_exponent:
-                    cpp_output += reader.word() + " ^ ";
-                    cpp_output += reader.word() + ";\n";
-                    break;
-
-                default:
-                    cpp_output += next_token + ";\n";
-                    break;
-            }
-        }
-            break;
-
-        case wts_begin_if:
-            {
-            cpp_output += "if (";
-            next_token = reader.word();
-            switch (wts_KeyWordsMap[next_token])
-            {
-                case wts_is_equal:
-                    cpp_output += reader.word() + " == ";
-                    cpp_output += reader.word() + ")\n";
-                    break;
-
-                case wts_is_not_equal:
-                    cpp_output += reader.word() + " != ";
-                    cpp_output += reader.word() + ")\n";
-                    break;
-
-                case wts_less_than:
-                    cpp_output += reader.word() + " < ";
-                    cpp_output += reader.word() + ")\n";
-                    break;
-
-                case wts_greater_than:
-                    cpp_output += reader.word() + " > ";
-                    cpp_output += reader.word() + ")\n";
-                    break;
-
-                case wts_less_than_or_equal:
-                    cpp_output += reader.word() + " <= ";
-                    cpp_output += reader.word() + ")\n";
-                    break;
-
-                case wts_greater_than_or_equal:
-                    cpp_output += reader.word() + " >= ";
-                    cpp_output += reader.word() + ")\n";
-                    break;
-
-                default:
-                    std::cout << "Error: Expected comparative operator\n";
-            }
-            cpp_output += "{\n";
-            }
-            break;
-
-        case wts_end_if:
-            cpp_output += "}\n";
-            break;
-
-        case wts_begin_while:
-            {
-            cpp_output += "while (";
-            next_token = reader.word();
-            switch (wts_KeyWordsMap[next_token])
-            {
-                case wts_is_equal:
-                    cpp_output += reader.word() + " == ";
-                    cpp_output += reader.word() + ")\n";
-                    break;
-
-                case wts_is_not_equal:
-                    cpp_output += reader.word() + " != ";
-                    cpp_output += reader.word() + ")\n";
-                    break;
-
-                case wts_less_than:
-                    cpp_output += reader.word() + " < ";
-                    cpp_output += reader.word() + ")\n";
-                    break;
-
-                case wts_greater_than:
-                    cpp_output += reader.word() + " > ";
-                    cpp_output += reader.word() + ")\n";
-                    break;
-
-                case wts_less_than_or_equal:
-                    cpp_output += reader.word() + " <= ";
-                    cpp_output += reader.word() + ")\n";
-                    break;
-
-                case wts_greater_than_or_equal:
-                    cpp_output += reader.word() + " >= ";
-                    cpp_output += reader.word() + ")\n";
-                    break;
-
-                default:
-                    std::cout << "Error: Expected comparative operator\n";
-            }
-            cpp_output += "{\n";
-            }
-            break;
-
-        case wts_end_while:
-            cpp_output += "}\n";
-            break;
-
-
-        default:
-            std::cout << "Error, unreacognised token: ||" + token + "||end_token\n";
+        (this->*function_pointer)(token);
     }
+    else
+    {
+        cpp_output += token;    //CHANGE THIS! If we don't know what it is, we output it. This is for varyables, but should be replaced with lookup table
+    }
+}
+
+
+void WTS_Parser::wts_begin_function(std::string token)
+{
+    cpp_output += "int " + reader.word() + "() {\n";
+}
+void WTS_Parser::wts_end_function(std::string token)
+{
+    cpp_output += "return 0;\n}\n";
+}
+void WTS_Parser::wts_go_function(std::string token)
+{
+    cpp_output += reader.word() + "()";
+}
+void WTS_Parser::wts_print(std::string token)
+{
+    cpp_output += "std::cout << " + reader.line();
+}
+void WTS_Parser::wts_integer(std::string token)
+{
+    cpp_output += "int " + reader.word();
+}
+void WTS_Parser::wts_unsigned_integer(std::string token)
+{
+    cpp_output += "unsigned int " + reader.word();
+}
+void WTS_Parser::wts_floating_point(std::string token)
+{
+    cpp_output += "float " + reader.word();
+}
+void WTS_Parser::wts_boolean(std::string token)
+{
+    cpp_output += "bool " + reader.word();
+}
+void WTS_Parser::wts_end_statement(std::string token)
+{
+    cpp_output += token + "\n";
+}
+void WTS_Parser::wts_simple_token_replacement(std::string token)
+{
+    cpp_output += "( ";
+    do_token(reader.word());
+    cpp_output += " " + token + " ";
+    do_token(reader.word());
+    cpp_output += " )";
+}
+void WTS_Parser::wts_equals(std::string token)
+{
+    cpp_output += reader.word() + " = ";
+    do_token(reader.word());
+}
+void WTS_Parser::wts_begin_if(std::string token)
+{
+    cpp_output += "if ( ";
+    do_token(reader.word());
+    cpp_output += ")\n{\n";
+}
+void WTS_Parser::wts_end_if(std::string token)
+{
+    cpp_output += "}\n";
+}
+void WTS_Parser::wts_begin_while(std::string token)
+{
+    cpp_output += "while ( ";
+    do_token(reader.word());
+    cpp_output += ")\n{\n";
+}
+void WTS_Parser::wts_end_while(std::string token)
+{
+    cpp_output += "}\n";
 }
 
 void WTS_Parser::initialize_map()
 {
-    wts_KeyWordsMap["begin"] = wts_begin_function;
-    wts_KeyWordsMap["end"] = wts_end_function;
-    wts_KeyWordsMap["go"] = wts_go_function;
-    wts_KeyWordsMap["print"] = wts_print;
-    wts_KeyWordsMap["int"] = wts_integer;
-    wts_KeyWordsMap["uint"] = wts_unsigned_integer;
-    wts_KeyWordsMap["float"] = wts_floating_point;
-    wts_KeyWordsMap["bool"] = wts_boolean;
-    wts_KeyWordsMap["="] = wts_equals;
-    wts_KeyWordsMap["+"] = wts_plus;
-    wts_KeyWordsMap["-"] = wts_minus;
-    wts_KeyWordsMap["*"] = wts_times;
-    wts_KeyWordsMap["/"] = wts_divide;
-    wts_KeyWordsMap["^"] = wts_exponent;
-    wts_KeyWordsMap["if"] = wts_begin_if;
-    wts_KeyWordsMap["endif"] = wts_end_if;
-    wts_KeyWordsMap["while"] = wts_begin_while;
-    wts_KeyWordsMap["endwhile"] = wts_end_while;
-    wts_KeyWordsMap["=="] = wts_is_equal;
-    wts_KeyWordsMap["!="] = wts_is_not_equal;
-    wts_KeyWordsMap["<"] = wts_less_than;
-    wts_KeyWordsMap[">"] = wts_greater_than;
-    wts_KeyWordsMap["<="] = wts_less_than_or_equal;
-    wts_KeyWordsMap[">="] = wts_greater_than_or_equal;
+    wts_KeyWordsMap["begin"] = &WTS_Parser::wts_begin_function;
+    wts_KeyWordsMap["end"] = &WTS_Parser::wts_end_function;
+    wts_KeyWordsMap["go"] = &WTS_Parser::wts_go_function;
+    wts_KeyWordsMap["print"] = &WTS_Parser::wts_print;
+    wts_KeyWordsMap["int"] = &WTS_Parser::wts_integer;
+    wts_KeyWordsMap["uint"] = &WTS_Parser::wts_unsigned_integer;
+    wts_KeyWordsMap["float"] = &WTS_Parser::wts_floating_point;
+    wts_KeyWordsMap["bool"] = &WTS_Parser::wts_boolean;
+    wts_KeyWordsMap[";"] = &WTS_Parser::wts_end_statement;
+    wts_KeyWordsMap["="] = &WTS_Parser::wts_equals;
+    wts_KeyWordsMap["+"] = &WTS_Parser::wts_simple_token_replacement;
+    wts_KeyWordsMap["-"] = &WTS_Parser::wts_simple_token_replacement;
+    wts_KeyWordsMap["*"] = &WTS_Parser::wts_simple_token_replacement;
+    wts_KeyWordsMap["/"] = &WTS_Parser::wts_simple_token_replacement;
+    wts_KeyWordsMap["^"] = &WTS_Parser::wts_simple_token_replacement;
+    wts_KeyWordsMap["if"] = &WTS_Parser::wts_begin_if;
+    wts_KeyWordsMap["endif"] = &WTS_Parser::wts_end_if;
+    wts_KeyWordsMap["while"] = &WTS_Parser::wts_begin_while;
+    wts_KeyWordsMap["endwhile"] = &WTS_Parser::wts_end_while;
+    wts_KeyWordsMap["=="] = &WTS_Parser::wts_simple_token_replacement;
+    wts_KeyWordsMap["!="] = &WTS_Parser::wts_simple_token_replacement;
+    wts_KeyWordsMap["<"] = &WTS_Parser::wts_simple_token_replacement;
+    wts_KeyWordsMap[">"] = &WTS_Parser::wts_simple_token_replacement;
+    wts_KeyWordsMap["<="] = &WTS_Parser::wts_simple_token_replacement;
+    wts_KeyWordsMap[">="] = &WTS_Parser::wts_simple_token_replacement;
 
     std::cout << "wts_KeyWordMap initilized, now contains " << wts_KeyWordsMap.size() << " entries.\n";
 }
