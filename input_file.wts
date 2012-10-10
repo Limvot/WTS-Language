@@ -1,14 +1,43 @@
 
 #Print Hello World! Function, to demonstrate function creation
+#the line below is a one-word comment
+#one-word
+#another line
 begin print_hello_func
 
-print "Hello World!"
+print "Hello World!\n"
 
 end print_hello_func
+
+begin math_func
+
+int a
+= a 2
+= a + a 2
+
+while < a 10
+= a + a 1
+
+if == a 4
+print "A is equal to 4!\n"
+endif
+
+if != a 10
+print "A is not equal to 10!\n"
+endif
+
+print "A is equal to "
+print a
+print "\n"
+
+endwhile
+
+end math_func
 
 #Main Function, entrence point of program
 begin main
 
 go print_hello_func
+go math_func
 
 end main

@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="WTS_Language" />
+		<Option title="WTS_Test" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="WTS_Language" prefix_auto="1" extension_auto="1" />
+				<Option output="WTS_Test" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Debug\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -16,7 +16,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="WTS_Language" prefix_auto="1" extension_auto="1" />
+				<Option output="WTS_Test" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Release\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -31,16 +31,8 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
-			<Add directory="src" />
-			<Add directory="include" />
 		</Compiler>
-		<Unit filename="include\Program.h" />
-		<Unit filename="include\WTS_Parser.h" />
-		<Unit filename="include\string_reader.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="src\Program.cpp" />
-		<Unit filename="src\WTS_Parser.cpp" />
-		<Unit filename="src\string_reader.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
