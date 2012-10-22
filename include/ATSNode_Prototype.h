@@ -3,12 +3,12 @@
 
 #include <string>
 
-#include <ATSNode.h>
+#include <ASTNode.h>
 #include <Block.h>
 
 
 
-class ATSNode_Prototype : public ATSNode
+class ATSNode_Prototype : public ASTNode
 {
     public:
         ATSNode_Prototype();

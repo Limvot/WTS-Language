@@ -3,15 +3,15 @@
 
 #include <vector>
 
-#include <ATSNode.h>
+#include <ASTNode.h>
 
 
-class Block : public ATSNode
+class Block : public ASTNode
 {
     public:
         Block();
         virtual ~Block();
-        std::vector<ATSNode*> ATSNodes;
+        std::vector<ASTNode*> ASTNodes;
     protected:
     private:
 };

@@ -1,10 +1,10 @@
 #ifndef ATSNODE_STATEMENT_H
 #define ATSNODE_STATEMENT_H
 
-#include <ATSNode.h>
+#include <ASTNode.h>
 
 
-class ATSNode_Statement : public ATSNode
+class ATSNode_Statement : public ASTNode
 {
     public:
         ATSNode_Statement();

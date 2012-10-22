@@ -19,6 +19,7 @@ class ASTNode : public Node
                             prototype,
                             prototype_function,
                             prototype_object,
+                            value,
                             basic
                             } type;
     protected:

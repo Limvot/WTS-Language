@@ -1,10 +1,10 @@
 #ifndef VALUE_H
 #define VALUE_H
 
-#include <ATSNode.h>
+#include <ASTNode.h>
 
 
-class Value : public ATSNode
+class Value : public ASTNode
 {
     public:
         Value();

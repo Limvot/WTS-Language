@@ -2,6 +2,7 @@
 #define ATSNODE_VARIABLE_H
 
 #include <ASTNode.h>
+#include <Value.h>
 
 
 class ATSNode_Variable : public ASTNode
