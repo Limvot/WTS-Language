@@ -96,7 +96,7 @@ std::string string_reader::get_tokens(std::string stop_char1, std::string stop_c
 std::string string_reader::truncate_end(std::string to_truncate)
 {
     std::string to_return = "";
-    for (int i = 0; i < to_truncate.length()-1; i++)
+    for (unsigned int i = 0; i < to_truncate.length()-1; i++)
         to_return = to_return + to_truncate[i];
     return to_return;
 }
