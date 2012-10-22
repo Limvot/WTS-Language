@@ -34,13 +34,31 @@
 			<Add directory="src" />
 			<Add directory="include" />
 		</Compiler>
+		<Unit filename="include/ASTNode.h" />
+		<Unit filename="include/ASTNode_Call.h" />
+		<Unit filename="include/ATSNode_Prototype.h" />
+		<Unit filename="include/ATSNode_Prototype_Function.h" />
+		<Unit filename="include/ATSNode_Prototype_Object.h" />
+		<Unit filename="include/ATSNode_Statement.h" />
+		<Unit filename="include/ATSNode_Variable.h" />
+		<Unit filename="include/Block.h" />
 		<Unit filename="include/Node.h" />
 		<Unit filename="include/Program.h" />
+		<Unit filename="include/Value.h" />
 		<Unit filename="include/WTS_Parser.h" />
 		<Unit filename="include/string_reader.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/ASTNode.cpp" />
+		<Unit filename="src/ASTNode_Call.cpp" />
+		<Unit filename="src/ATSNode_Prototype.cpp" />
+		<Unit filename="src/ATSNode_Prototype_Function.cpp" />
+		<Unit filename="src/ATSNode_Prototype_Object.cpp" />
+		<Unit filename="src/ATSNode_Statement.cpp" />
+		<Unit filename="src/ATSNode_Variable.cpp" />
+		<Unit filename="src/Block.cpp" />
 		<Unit filename="src/Node.cpp" />
 		<Unit filename="src/Program.cpp" />
+		<Unit filename="src/Value.cpp" />
 		<Unit filename="src/WTS_Parser.cpp" />
 		<Unit filename="src/string_reader.cpp" />
 		<Extensions>
