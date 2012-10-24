@@ -12,7 +12,7 @@ class ASTNode : public Node
         ASTNode();
         virtual ~ASTNode();
         std::string name;
-        enum ATSType {      call,
+        enum ASTType {      call,
                             variable,
                             statement,
                             block,

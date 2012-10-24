@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include "string_reader.h"
+#include "ASTNode.h"
 
 class WTS_Parser
 {
