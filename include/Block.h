@@ -11,7 +11,6 @@ class Block : public ASTNode
     public:
         Block();
         virtual ~Block();
-        std::vector<ASTNode*> ASTNodes;
     protected:
     private:
 };

@@ -6,6 +6,7 @@
 #include <ASTNode_Prototype.h>
 #include <Value.h>
 
+class Value;	//Because functions can both be and use values. Fix the circular dependency, close the loop.
 
 class ASTNode_Prototype_Function : public ASTNode_Prototype
 {
@@ -14,7 +15,7 @@ class ASTNode_Prototype_Function : public ASTNode_Prototype
         virtual ~ASTNode_Prototype_Function();
         std::vector<Value*> parameters;
         unsigned int num_parameters;
-        Value::value_type return_type;
+        Value* return_value;						//Will set its type, but not its data, so can figure out what this thing returns
     protected:
     private:
 };

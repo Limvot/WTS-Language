@@ -3,7 +3,7 @@
 ASTNode_Prototype::ASTNode_Prototype()
 {
     type = prototype;
-    block = NULL;
+    block = new Block();
 }
 
 ASTNode_Prototype::~ASTNode_Prototype()

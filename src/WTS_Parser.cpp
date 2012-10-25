@@ -55,13 +55,13 @@ std::string WTS_Parser::getCPP()
 }
 
 
-void WTS_Parser::do_token(std::string token)
+Value* WTS_Parser::do_token(std::string token)
 {
     //Look up the word in the keywordmap, call assoicated function pointer with argument token
-    void(WTS_Parser::* function_pointer)(std::string) = wts_KeyWordsMap[token];
+    Value*(WTS_Parser::* function_pointer)(std::string) = wts_KeyWordsMap[token];
     if (function_pointer != 0)
     {
-        (this->*function_pointer)(token);
+        return (this->*function_pointer)(token);
     }
     else
     {
@@ -70,72 +70,140 @@ void WTS_Parser::do_token(std::string token)
 }
 
 
-void WTS_Parser::wts_begin_function(std::string token)
+Value* WTS_Parser::wts_begin_function(std::string token)
 {
-    cpp_output += "int " + reader.word() + "() {\n";
+    std::string function_name = reader.word();
+    cpp_output += "int " + function_name + "() {\n";
+
+    ASTNode_Prototype_Function* new_function = new ASTNode_Prototype_Function;      //Create a new function
+    new_function->name = function_name;                                             //Name the function the supplied name
+    tree.functions[function_name] = new_function;                                   //Add the function to our function map, with the name as the key
+    tree.current_node->addChild(new_function);                                           //Add the new function node to the current node
+    tree.current_node = new_function->block;                                             //Set current node to the new function's block
 }
-void WTS_Parser::wts_end_function(std::string token)
+Value* WTS_Parser::wts_end_function(std::string token)
 {
     cpp_output += "return 0;\n}\n";
+
+    tree.current_node = tree.current_node->parent->parent;                                    //Get the parent of our parent, that is the node the function was defigned in
+                                                                                    //current node is the block->function->function's parent
 }
-void WTS_Parser::wts_go_function(std::string token)
+Value* WTS_Parser::wts_go_function(std::string token)
 {
-    cpp_output += reader.word() + "()";
+    std::string call_name = reader.word();
+    cpp_output += call_name + "()";
+
+    ASTNode_Call* new_call = new ASTNode_Call;
+    new_call->name = call_name;
+    new_call->function = tree.functions[call_name];                                 //Look up the pointer to the function prototype in the tree's functions map, and assign it to the call's function prototype pointer
+    if (new_call->function == 0)                                                    //Throw an exception if we don't find it. This should be expanded later.
+        throw -1;
+    tree.current_node->addChild(new_call);
 }
-void WTS_Parser::wts_print(std::string token)
+Value* WTS_Parser::wts_print(std::string token)
 {
     cpp_output += "std::cout << " + reader.line();
+
+    //ADD SUPPORT FOR EXTERNAL FUNCTIONS!!!! (Standerd Library)
 }
-void WTS_Parser::wts_integer(std::string token)
+Value* WTS_Parser::wts_integer(std::string token)
 {
-    cpp_output += "int " + reader.word();
+    std::string variable_name = reader.word();
+    cpp_output += "int " + variable_name;
+
+    ASTNode_Variable* new_variable = new ASTNode_Variable;
+    new_variable->name = variable_name;
+    new_variable->value->val_type = Value::typ_int;
+    tree.variables[variable_name] = new_variable;
+    tree.current_node->addChild(new_variable);
+
 }
-void WTS_Parser::wts_unsigned_integer(std::string token)
+Value* WTS_Parser::wts_unsigned_integer(std::string token)
 {
-    cpp_output += "unsigned int " + reader.word();
+    std::string variable_name = reader.word();
+    cpp_output += "unsigned int " + variable_name;
+
+    ASTNode_Variable* new_variable = new ASTNode_Variable;
+    new_variable->name = variable_name;
+    new_variable->value->val_type = Value::typ_uint;
+    tree.variables[variable_name] = new_variable;
+    tree.current_node->addChild(new_variable);
 }
-void WTS_Parser::wts_floating_point(std::string token)
+Value* WTS_Parser::wts_floating_point(std::string token)
 {
-    cpp_output += "float " + reader.word();
+    std::string variable_name = reader.word();
+    cpp_output += "float " + variable_name;
+
+    ASTNode_Variable* new_variable = new ASTNode_Variable;
+    new_variable->name = variable_name;
+    new_variable->value->val_type = Value::typ_float;
+    tree.variables[variable_name] = new_variable;
+    tree.current_node->addChild(new_variable);
 }
-void WTS_Parser::wts_boolean(std::string token)
+Value* WTS_Parser::wts_boolean(std::string token)
 {
-    cpp_output += "bool " + reader.word();
+    std::string variable_name = reader.word();
+    cpp_output += "bool " + variable_name;
+
+    ASTNode_Variable* new_variable = new ASTNode_Variable;
+    new_variable->name = variable_name;
+    new_variable->value->val_type = Value::typ_bool;
+    tree.variables[variable_name] = new_variable;
+    tree.current_node->addChild(new_variable);
 }
-void WTS_Parser::wts_end_statement(std::string token)
+Value* WTS_Parser::wts_end_statement(std::string token)
 {
     cpp_output += token + "\n";
+
+    //No representation for an end of statement in the AST. If the final language uses end_statements, it will be in the upper parts of the parser
 }
-void WTS_Parser::wts_simple_token_replacement(std::string token)
+Value* WTS_Parser::wts_simple_token_replacement(std::string token)
 {
     cpp_output += "( ";
-    do_token(reader.word());
+    Value* param1 = do_token(reader.word());
     cpp_output += " " + token + " ";
-    do_token(reader.word());
+    Value* param2 = do_token(reader.word());
     cpp_output += " )";
+
+
+    std::string call_name = token;
+    ASTNode_Call* new_call = new ASTNode_Call;
+    new_call->name = call_name;
+    new_call->function = tree.functions[call_name];                                 //Look up the pointer to the function prototype in the tree's functions map, and assign it to the call's function prototype pointer
+    if (new_call->function == 0)                                                    //Throw an exception if we don't find it. This should be expanded later.
+        throw -1;
+    new_call->parameters.push_back(param1);
+    new_call->parameters.push_back(param2);
+    Value* return_value = new Value();
+    return_value->val_type = Value::typ_call;
+    return_value->data.dat_call = new_call;
+    return return_value;
+
+    
 }
-void WTS_Parser::wts_equals(std::string token)
+Value* WTS_Parser::wts_equals(std::string token)
 {
-    cpp_output += reader.word() + " = ";
-    do_token(reader.word());
+    std::string variable_name = reader.word();
+    cpp_output += variable_name + " = ";
+    tree.variables[variable_name]->value = do_token(reader.word());
 }
-void WTS_Parser::wts_begin_if(std::string token)
+Value* WTS_Parser::wts_begin_if(std::string token)
 {
     cpp_output += "if ( ";
     do_token(reader.word());
     cpp_output += ")\n{\n";
 }
-void WTS_Parser::wts_end_if(std::string token)
+Value* WTS_Parser::wts_end_if(std::string token)
 {
     cpp_output += "}\n";
 }
-void WTS_Parser::wts_begin_while(std::string token)
+Value* WTS_Parser::wts_begin_while(std::string token)
 {
     cpp_output += "while ( ";
     do_token(reader.word());
     cpp_output += ")\n{\n";
 }
-void WTS_Parser::wts_end_while(std::string token)
+Value* WTS_Parser::wts_end_while(std::string token)
 {
     cpp_output += "}\n";
 }

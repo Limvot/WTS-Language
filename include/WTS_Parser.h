@@ -5,7 +5,13 @@
 #include <string>
 #include <iostream>
 #include "string_reader.h"
+
+#include "AbstractSyntaxTree.h"
 #include "ASTNode.h"
+#include "ASTNode_Prototype_Function.h"
+#include "ASTNode_Call.h"
+#include "ASTNode_Variable.h"
+#include "Value.h"
 
 class WTS_Parser
 {
@@ -15,12 +21,12 @@ class WTS_Parser
         int set_string(std::string input_string);
         int parse();
         std::string getCPP();
-        void do_token(std::string token);
+        Value* do_token(std::string token);
 
-        //typedef void(*WTS_Parser()::token_handle_function)(std::string);
-        //std::map<std::string, token_handle_function> wts_KeyWordsMap;
-        std::map<std::string, void(WTS_Parser::*)(std::string)> wts_KeyWordsMap;
+        std::map<std::string, Value*(WTS_Parser::*)(std::string)> wts_KeyWordsMap;
         void initialize_map();
+
+        AbstractSyntaxTree tree;
 
     protected:
         bool reached_end;
@@ -28,21 +34,21 @@ class WTS_Parser
         std::string cpp_output;
         std::string next_token;
 
-void wts_begin_function(std::string token);
-void wts_end_function(std::string token);
-void wts_go_function(std::string token);
-void wts_print(std::string token);
-void wts_integer(std::string token);
-void wts_unsigned_integer(std::string token);
-void wts_floating_point(std::string token);
-void wts_boolean(std::string token);
-void wts_end_statement(std::string token);
-void wts_simple_token_replacement(std::string token);
-void wts_equals(std::string token);
-void wts_begin_if(std::string token);
-void wts_end_if(std::string token);
-void wts_begin_while(std::string token);
-void wts_end_while(std::string token);
+        Value* wts_begin_function(std::string token);
+        Value* wts_end_function(std::string token);
+        Value* wts_go_function(std::string token);
+        Value* wts_print(std::string token);
+        Value* wts_integer(std::string token);
+        Value* wts_unsigned_integer(std::string token);
+        Value* wts_floating_point(std::string token);
+        Value* wts_boolean(std::string token);
+        Value* wts_end_statement(std::string token);
+        Value* wts_simple_token_replacement(std::string token);
+        Value* wts_equals(std::string token);
+        Value* wts_begin_if(std::string token);
+        Value* wts_end_if(std::string token);
+        Value* wts_begin_while(std::string token);
+        Value* wts_end_while(std::string token);
 
     private:
 };

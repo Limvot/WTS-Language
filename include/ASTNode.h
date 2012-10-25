@@ -1,16 +1,32 @@
 #ifndef ASTNODE_H
 #define ASTNODE_H
 
+#include <vector>
 #include <string>
 
-#include <Node.h>
+#ifndef NULL
+#define NULL 0
+#endif
 
 
-class ASTNode : public Node
+
+class ASTNode
 {
     public:
         ASTNode();
+        ASTNode(ASTNode* incoming_parent);
         virtual ~ASTNode();
+
+        int setParent(ASTNode* incoming_parent);
+        int addChild(ASTNode* incoming_child);
+        int removeChild(ASTNode* remove_child);
+        int deleteChild(ASTNode* delete_child);
+        int findChild(ASTNode* find_child);
+
+        ASTNode* parent;
+        std::vector<ASTNode*> children;
+        unsigned int num_children;
+
         std::string name;
         enum ASTType {      call,
                             variable,

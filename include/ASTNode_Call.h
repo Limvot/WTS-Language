@@ -7,6 +7,10 @@
 #include <ASTNode_Prototype_Function.h>
 #include <Value.h>
 
+// I hate circular dependencies
+class ASTNode_Prototype_Function;
+class Value;
+
 
 class ASTNode_Call : public ASTNode
 {
