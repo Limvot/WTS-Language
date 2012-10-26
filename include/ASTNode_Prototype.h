@@ -13,7 +13,6 @@ class ASTNode_Prototype : public ASTNode
     public:
         ASTNode_Prototype();
         virtual ~ASTNode_Prototype();
-        Block* block;
 
     protected:
     private:

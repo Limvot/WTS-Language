@@ -3,10 +3,11 @@
 ASTNode_Variable::ASTNode_Variable()
 {
     type = variable;
-    value = NULL;
+    value = new Value;
+    value->parent = this;
 }
 
 ASTNode_Variable::~ASTNode_Variable()
 {
-    //dtor
+    delete value;
 }

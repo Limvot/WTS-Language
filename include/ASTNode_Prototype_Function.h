@@ -15,6 +15,7 @@ class ASTNode_Prototype_Function : public ASTNode_Prototype
         virtual ~ASTNode_Prototype_Function();
         std::vector<Value*> parameters;
         unsigned int num_parameters;
+        Block* function_body;
         Value* return_value;						//Will set its type, but not its data, so can figure out what this thing returns
     protected:
     private:

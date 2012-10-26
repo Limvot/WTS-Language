@@ -3,7 +3,8 @@
 WTS_Parser::WTS_Parser()
 {
     reached_end = false;
-    initialize_map();   //Setup out map of keywords
+    initialize_map();                                               //Setup out map of keywords
+    initialize_builtin_functions();                                 //Add inbuilt functions to the AST (+-*/^print, etc)
 }
 
 WTS_Parser::~WTS_Parser()
@@ -78,8 +79,9 @@ Value* WTS_Parser::wts_begin_function(std::string token)
     ASTNode_Prototype_Function* new_function = new ASTNode_Prototype_Function;      //Create a new function
     new_function->name = function_name;                                             //Name the function the supplied name
     tree.functions[function_name] = new_function;                                   //Add the function to our function map, with the name as the key
-    tree.current_node->addChild(new_function);                                           //Add the new function node to the current node
-    tree.current_node = new_function->block;                                             //Set current node to the new function's block
+    tree.current_node->addChild(new_function);                                      //Add the new function node to the current node
+    new_function->parent = tree.current_node;                                       //Set the parent of our node
+    tree.current_node = new_function->function_body;                                //Set current node to the new function's block
 }
 Value* WTS_Parser::wts_end_function(std::string token)
 {
@@ -97,7 +99,7 @@ Value* WTS_Parser::wts_go_function(std::string token)
     new_call->name = call_name;
     new_call->function = tree.functions[call_name];                                 //Look up the pointer to the function prototype in the tree's functions map, and assign it to the call's function prototype pointer
     if (new_call->function == 0)                                                    //Throw an exception if we don't find it. This should be expanded later.
-        throw -1;
+        throw new SyntaxErrorException;
     tree.current_node->addChild(new_call);
 }
 Value* WTS_Parser::wts_print(std::string token)
@@ -231,11 +233,26 @@ void WTS_Parser::initialize_map()
     wts_KeyWordsMap["endwhile"] = &WTS_Parser::wts_end_while;
     wts_KeyWordsMap["=="] = &WTS_Parser::wts_simple_token_replacement;
     wts_KeyWordsMap["!="] = &WTS_Parser::wts_simple_token_replacement;
-    wts_KeyWordsMap["<"] = &WTS_Parser::wts_simple_token_replacement;
     wts_KeyWordsMap[">"] = &WTS_Parser::wts_simple_token_replacement;
-    wts_KeyWordsMap["<="] = &WTS_Parser::wts_simple_token_replacement;
+    wts_KeyWordsMap["<"] = &WTS_Parser::wts_simple_token_replacement;
     wts_KeyWordsMap[">="] = &WTS_Parser::wts_simple_token_replacement;
+    wts_KeyWordsMap["<="] = &WTS_Parser::wts_simple_token_replacement;
 
     std::cout << "wts_KeyWordMap initilized, now contains " << wts_KeyWordsMap.size() << " entries.\n";
+}
+
+void WTS_Parser::initialize_builtin_functions()
+{
+    tree.functions["+"] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::addition);
+    tree.functions["-"] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::subtraction);
+    tree.functions["*"] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::multiplication);
+    tree.functions["/"] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::division);
+    tree.functions["^"] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::exponent);
+    tree.functions["=="] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::equal);
+    tree.functions["!="] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::not_equal);
+    tree.functions[">"] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::greater_than);
+    tree.functions["<"] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::less_than);
+    tree.functions[">="] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::greater_than_or_equal);
+    tree.functions["<="] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::less_than_or_equal);
 }
 

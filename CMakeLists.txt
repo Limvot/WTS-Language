@@ -4,7 +4,7 @@ project(WTS-Language-Compiler)
 
 set( MY_INCLUDES ${PROJECT_SOURCE_DIR}/include)
 
-set( MY_SOURCES main.cpp src/Program.cpp src/AbstractSyntaxTree.cpp src/ASTNode.cpp src/ASTNode_Call.cpp src/ASTNode_Prototype.cpp src/ASTNode_Prototype_Function.cpp src/ASTNode_Prototype_Object.cpp src/ASTNode_Statement.cpp src/ASTNode_Variable.cpp src/Block.cpp src/string_reader.cpp src/Value.cpp src/WTS_Parser.cpp)
+set( MY_SOURCES main.cpp src/Program.cpp src/AbstractSyntaxTree.cpp src/ASTNode.cpp src/ASTNode_Call.cpp src/ASTNode_Prototype.cpp src/ASTNode_Prototype_Function.cpp src/ASTNode_Prototype_Function_Builtin.cpp src/ASTNode_Prototype_Object.cpp src/ASTNode_Statement.cpp src/ASTNode_Variable.cpp src/Block.cpp src/string_reader.cpp src/Value.cpp src/WTS_Parser.cpp)
 
 include_directories( ${MY_INCLUDES} )
 

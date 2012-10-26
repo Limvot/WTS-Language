@@ -4,11 +4,13 @@
 #include <map>
 #include <string>
 #include <iostream>
-#include "string_reader.h"
 
+#include "string_reader.h"
+#include "SyntaxErrorException.h"
 #include "AbstractSyntaxTree.h"
 #include "ASTNode.h"
 #include "ASTNode_Prototype_Function.h"
+#include "ASTNode_Prototype_Function_Builtin.h"
 #include "ASTNode_Call.h"
 #include "ASTNode_Variable.h"
 #include "Value.h"
@@ -25,6 +27,7 @@ class WTS_Parser
 
         std::map<std::string, Value*(WTS_Parser::*)(std::string)> wts_KeyWordsMap;
         void initialize_map();
+        void initialize_builtin_functions();
 
         AbstractSyntaxTree tree;
 
