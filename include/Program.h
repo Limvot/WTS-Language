@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 
+#include "SyntaxErrorException.h"
 #include "WTS_Parser.h"
 
 class Program

@@ -55,7 +55,15 @@ int Program::run(char* input_file_name_in, char* output_file_name_in)
 
     //Parse this thing!
     parser.set_string(input_file_string);
-    parser.parse();
+    try
+    {
+        parser.parse();
+    }
+    catch (SyntaxErrorException* syntax_error)
+    {
+        std::cout << "!!!!!!|||||||||A syntax error has occured, quiting...!!!!!!|||||||||\n";
+        return -1;
+    }
     output_CPP = parser.getCPP();
 
     //Output created C++ to file
