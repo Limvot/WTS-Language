@@ -2,7 +2,7 @@
 
 Block::Block()
 {
-    //ctor
+    type = block;
 }
 
 Block::~Block()

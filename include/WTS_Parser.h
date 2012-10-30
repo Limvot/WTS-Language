@@ -42,14 +42,14 @@ class WTS_Parser
         Value* wts_begin_function(std::string token);
         Value* wts_end_function(std::string token);
         Value* wts_go_function(std::string token);
-        Value* wts_print(std::string token);
+        Value* wts_variable(std::string token, Value::value_type);    //This one is special. It is not called from or included in the map, but is called by the other specilized variable functions
         Value* wts_integer(std::string token);
         Value* wts_unsigned_integer(std::string token);
         Value* wts_floating_point(std::string token);
         Value* wts_boolean(std::string token);
         Value* wts_end_statement(std::string token);
-        Value* wts_simple_token_replacement(std::string token);
-        Value* wts_equals(std::string token);
+        Value* wts_binary_operator(std::string token);
+        Value* wts_unary_operator(std::string token);
         Value* wts_begin_if(std::string token);
         Value* wts_end_if(std::string token);
         Value* wts_begin_while(std::string token);

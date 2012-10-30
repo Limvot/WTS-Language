@@ -12,6 +12,7 @@ class ASTNode_Prototype_Function_Builtin : public ASTNode_Prototype_Function
 {
     public:
     	enum builtin_type {	none,
+                            print,
                             assignment,
                             addition,
         					subtraction,

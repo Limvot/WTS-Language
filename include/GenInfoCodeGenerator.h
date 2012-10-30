@@ -1,6 +1,7 @@
 #ifndef GEN_INFO_CODE_GENERATOR_H
 #define GEN_INFO_CODE_GENERATOR_H
 
+#include <iostream>
 #include <vector>
 #include <map>
 #include <string>
