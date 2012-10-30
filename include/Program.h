@@ -7,6 +7,8 @@
 
 #include "SyntaxErrorException.h"
 #include "WTS_Parser.h"
+#include "CCodeGenerator.h"
+#include "GenInfoCodeGenerator.h"
 
 class Program
 {

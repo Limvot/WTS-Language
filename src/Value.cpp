@@ -55,6 +55,13 @@ Value::Value(char in_char)
     data.dat_char = in_char;
 }
 
+Value::Value(ASTNode_Variable* in_variable)
+{
+    type = value;
+    val_type = typ_variable;
+    data.dat_variable = in_variable;
+}
+
 Value::Value(ASTNode_Call* in_call)
 {
     type = value;
@@ -69,21 +76,64 @@ Value::~Value()
 		case typ_void:
 			break;
 
-			case typ_object:
+        case typ_variable:
+            if (data.dat_variable != NULL)
+            {
+                delete data.dat_variable;
+                data.dat_variable = NULL;
+            }
+            break;
+		
+    	case typ_object:
 			//if (data.dat_void_ptr != NULL)
 				//BAD BAD BAD;
 			break;
 
-			case typ_function:
+		case typ_function:
 			//if (data.dat_void_ptr != NULL)
 				//BAD BAD BAD;
 			break;
 
-			case typ_call:
+		case typ_call:
 			if (data.dat_call != NULL)
+            {
 				delete data.dat_call;
+                data.dat_variable = NULL;
+            }
 			break;
 
 	}
     //dtor
+}
+
+Value::value_type Value::isNumber(std::string input_string)
+{
+    if (atoi(input_string.c_str()))
+    {
+        return typ_int;
+    } else {
+        if (atof(input_string.c_str()))
+        {
+            return typ_double;
+        }
+    }
+    return typ_void;
+}
+
+bool Value::makeNumber(std::string input_string)
+{
+    if (atoi(input_string.c_str()))
+    {
+        val_type = typ_int;
+        data.dat_int = atoi(input_string.c_str());
+        return true;
+    } else {
+        if (atof(input_string.c_str()))
+        {
+            val_type = typ_double;
+            data.dat_double = atof(input_string.c_str());
+            return true;
+        }
+    }
+    return false;
 }

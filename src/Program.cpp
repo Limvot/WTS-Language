@@ -21,6 +21,8 @@ int Program::run(char* input_file_name_in, char* output_file_name_in)
     std::ofstream output_file;
 
     WTS_Parser parser;
+    CCodeGenerator ccode_gen;
+    GenInfoCodeGenerator info_gen;
 
     //Get the file!
     input_file_name = input_file_name_in;
@@ -62,16 +64,24 @@ int Program::run(char* input_file_name_in, char* output_file_name_in)
     catch (SyntaxErrorException* syntax_error)
     {
         std::cout << "!!!!!!|||||||||A syntax error has occured, quiting...!!!!!!|||||||||\n";
+        std::cout << parser.getCPP();
         return -1;
     }
     output_CPP = parser.getCPP();
 
-    //Output created C++ to file
+    output_CPP = output_CPP + "\n\n//INFO SECTION!!!!\n\n";
+    info_gen.generate(parser.getTree());
+    output_CPP = output_CPP + info_gen.getOutput();
+
+    output_CPP = output_CPP + "\n\n//C code!!!!!\n\n";
+    ccode_gen.generate(parser.getTree());
+    output_CPP = output_CPP + ccode_gen.getOutput();
+
 
     output_file << output_CPP;
     output_file.close();
 
-    std::cout << "Program has been sucessfuly compiled into C++ and saved!\n";
+    std::cout << "Program has been sucessfuly compiled into C/C++ and saved!\n";
 
     return 0;
 }

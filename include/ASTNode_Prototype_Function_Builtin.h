@@ -11,7 +11,9 @@ class Value;	//Because functions can both be and use values. Fix the circular de
 class ASTNode_Prototype_Function_Builtin : public ASTNode_Prototype_Function
 {
     public:
-    	        enum builtin_type {	addition,
+    	enum builtin_type {	none,
+                            assignment,
+                            addition,
         					subtraction,
         					multiplication,
         					division,
@@ -23,8 +25,7 @@ class ASTNode_Prototype_Function_Builtin : public ASTNode_Prototype_Function
         					greater_than_or_equal,
         					less_than_or_equal} operator_type;
 
-        ASTNode_Prototype_Function_Builtin();
-        ASTNode_Prototype_Function_Builtin(builtin_type incoming_type);
+        ASTNode_Prototype_Function_Builtin(builtin_type incoming_type = none, std::string incoming_name = "unamed_builtin");
         virtual ~ASTNode_Prototype_Function_Builtin();
 
     protected:

@@ -14,6 +14,7 @@
 #include "ASTNode_Call.h"
 #include "ASTNode_Variable.h"
 #include "Value.h"
+#include "ASTNode_Statement.h"
 
 class WTS_Parser
 {
@@ -23,6 +24,7 @@ class WTS_Parser
         int set_string(std::string input_string);
         int parse();
         std::string getCPP();
+        AbstractSyntaxTree* getTree();
         Value* do_token(std::string token);
 
         std::map<std::string, Value*(WTS_Parser::*)(std::string)> wts_KeyWordsMap;
