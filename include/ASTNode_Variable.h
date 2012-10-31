@@ -17,3 +17,4 @@ class ASTNode_Variable : public ASTNode
 };
 
 #endif // ASTNODE_VARIABLE_H
+	
