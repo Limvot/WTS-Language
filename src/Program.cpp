@@ -67,12 +67,15 @@ int Program::run(char* input_file_name_in, char* output_file_name_in)
         std::cout << parser.getCPP();
         return -1;
     }
+
+    output_CPP = "";
+    /*
     output_CPP = parser.getCPP();
 
     output_CPP = output_CPP + "\n\n//INFO SECTION!!!!\n\n";
     info_gen.generate(parser.getTree());
     output_CPP = output_CPP + info_gen.getOutput();
-
+*/
     output_CPP = output_CPP + "\n\n//C code!!!!!\n\n";
     ccode_gen.generate(parser.getTree());
     output_CPP = output_CPP + ccode_gen.getOutput();

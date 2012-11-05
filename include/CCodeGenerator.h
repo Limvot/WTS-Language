@@ -1,12 +1,16 @@
 #ifndef C_CODE_GENERATOR_H
 #define C_CODE_GENERATOR_H
 
+#include <iostream>
 #include <string>
 #include <sstream>
 
 #include "CodeGenerator.h"
 #include "Value.h"
+#include "ASTNode_Variable.h"
 #include "ASTNode_Prototype_Function.h"
+#include "ASTNode_Prototype_Function_Builtin.h"
+
 #include "ASTNode_Statement.h"
 
 #ifndef NULL
@@ -24,8 +28,11 @@ class CCodeGenerator : public CodeGenerator
         std::string toString(int in);
 
         void generate(AbstractSyntaxTree* tree);
-        void do_node(ASTNode* current_node, std::string prefix = std::string(""));
+        void do_node(ASTNode* current_node, std::string prefix = std::string(""), std::string ending_statement = std::string(""));
         std::string getOutput();
+
+        std::string doOperatorSymbol(ASTNode_Prototype_Function_Builtin::builtin_type);
+        std::string doValueType(Value::value_type type_in);
         
         //ASTNode*
     protected:
@@ -35,3 +42,4 @@ class CCodeGenerator : public CodeGenerator
 
 #endif // C_CODE_GENERATOR_H
 
+//

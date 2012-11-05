@@ -26,6 +26,8 @@ class ASTNode_Prototype_Function_Builtin : public ASTNode_Prototype_Function
         					greater_than_or_equal,
         					less_than_or_equal} operator_type;
 
+        bool is_binary;
+
         ASTNode_Prototype_Function_Builtin(builtin_type incoming_type = none, std::string incoming_name = "unamed_builtin");
         virtual ~ASTNode_Prototype_Function_Builtin();
 

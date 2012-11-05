@@ -4,6 +4,7 @@ ASTNode_Prototype_Function::ASTNode_Prototype_Function()
 {
     type = prototype_function;
     num_parameters = 0;
+    func_type = func_normal;
     function_body = new Block;
     function_body->parent = this;
     return_value = new Value;

@@ -30,6 +30,7 @@ class WTS_Parser
         std::map<std::string, Value*(WTS_Parser::*)(std::string)> wts_KeyWordsMap;
         void initialize_map();
         void initialize_builtin_functions();
+        Value::value_type getValueType(std::string string_in);
 
         AbstractSyntaxTree tree;
 

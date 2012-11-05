@@ -6,6 +6,13 @@ ASTNode_Prototype_Function_Builtin::ASTNode_Prototype_Function_Builtin(builtin_t
 {
 	operator_type = incoming_type;
 	name = incoming_name;
+	func_type = func_builtin;
+
+	if (operator_type == print)
+		is_binary = false;
+	else
+		is_binary = true;
+
 }
 
 ASTNode_Prototype_Function_Builtin::~ASTNode_Prototype_Function_Builtin()

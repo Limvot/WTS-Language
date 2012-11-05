@@ -3,13 +3,13 @@
 #the line below is a one-word comment
 #one-word
 #another line
-begin print_hello_func
+begin int print_hello_func
 
-print "Hello World!\n" ;
+print 4 ;
 
 end
 
-begin math_func
+begin int math_func
 
 int a ;
 = a 2 ;
@@ -19,25 +19,45 @@ while < a 10
 = a + a 1 ;
 
 if == a 4
-print "A is equal to 4!\n" ;
+print 4 ;
 endif
 
 if != a 10
-print "A is not equal to 10!\n" ;
+print 4 ;
 endif
 
-print "A is equal to " ;
+print 4 ;
 print a ;
-print "\n" ;
+print 4 ;
 
 endwhile
 
 end
 
-#Main Function, entrence point of program
-begin main
+begin int fib
+int a ;
+int b ;
+int c ;
+= a 1;
+= b 1 ;
+= c 1 ;
 
-go print_hello_func ;
-go math_func ;
+print 1 ;
+
+while < a 100
+print a ;
+= c a ;
+= a + a b ;
+= b c ;
+endwhile
+
+end
+
+#Main Function, entrence point of program
+begin int main
+
+#go print_hello_func ;
+#go math_func ;
+go fib ;
 
 end main

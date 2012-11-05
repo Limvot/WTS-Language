@@ -17,6 +17,10 @@ class ASTNode_Prototype_Function : public ASTNode_Prototype
         unsigned int num_parameters;
         Block* function_body;
         Value* return_value;						//Will set its type, but not its data, so can figure out what this thing returns
+
+        enum function_type {
+        						func_normal,
+        						func_builtin } func_type;	//May add stuff like inline, lambda, pure, etc
     protected:
     private:
 };

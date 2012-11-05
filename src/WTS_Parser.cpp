@@ -101,10 +101,13 @@ Value* WTS_Parser::do_token(std::string token)
 
 Value* WTS_Parser::wts_begin_function(std::string token)
 {
+    std::string return_type = reader.word();
     std::string function_name = reader.word();
+
     cpp_output += "int " + function_name + "() {\n";
 
     ASTNode_Prototype_Function* new_function = new ASTNode_Prototype_Function;      //Create a new function
+    new_function->return_value->val_type = getValueType(return_type);
     new_function->name = function_name;                                             //Name the function the supplied name
     tree.functions[function_name] = new_function;                                   //Add the function to our function map, with the name as the key
     tree.current_node->addChild(new_function);                                      //Add the new function node to the current node
@@ -337,5 +340,26 @@ void WTS_Parser::initialize_builtin_functions()
     tree.functions["<"] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::less_than, "less_than");
     tree.functions[">="] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::greater_than_or_equal, "greater_than_or_equal");
     tree.functions["<="] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::less_than_or_equal, "less_than_or_equal");
+}
+
+Value::value_type WTS_Parser::getValueType(std::string string_in)
+{
+    if (string_in == "int")
+        return Value::typ_int;
+
+    if (string_in == "uint")
+        return Value::typ_uint;
+
+    if (string_in == "float")
+        return Value::typ_float;
+
+    if (string_in == "double")
+        return Value::typ_double;
+
+    if (string_in == "bool")
+        return Value::typ_bool;
+
+    if (string_in == "char")
+        return Value::typ_char;
 }
 
