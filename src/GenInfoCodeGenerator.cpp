@@ -13,6 +13,7 @@ GenInfoCodeGenerator::~GenInfoCodeGenerator()
 
 void GenInfoCodeGenerator::generate(AbstractSyntaxTree* tree)
 {
+	output_info = "/*\n";
 	if (tree->root.num_children)
 	{
 		for (unsigned int i = 0; i < tree->root.num_children; i++)
@@ -20,6 +21,7 @@ void GenInfoCodeGenerator::generate(AbstractSyntaxTree* tree)
 			do_node(tree->root.children[i]);							//Go through each child of the root node
 		}
 	}
+	output_info += "*/\n";
 }
 
 std::string GenInfoCodeGenerator::toString(int in)
@@ -78,7 +80,7 @@ void GenInfoCodeGenerator::do_node(ASTNode* current_node, std::string prefix)			
 					}
 
 					case ASTNode_Statement::while_statement:
-						output_info += prefix +"While statement\n";
+						output_info += "While statement\n";
 						output_info += prefix + "\tCondition:\n";
 						do_node(statement_node->condition, prefix+"\t\t");
 						output_info += prefix + "\tExecutable Block:\n";

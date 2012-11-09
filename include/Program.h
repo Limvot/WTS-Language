@@ -9,6 +9,7 @@
 #include "WTS_Parser.h"
 #include "CCodeGenerator.h"
 #include "GenInfoCodeGenerator.h"
+#include "Interpreter.h"
 
 class Program
 {

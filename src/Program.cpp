@@ -23,6 +23,7 @@ int Program::run(char* input_file_name_in, char* output_file_name_in)
     WTS_Parser parser;
     CCodeGenerator ccode_gen;
     GenInfoCodeGenerator info_gen;
+    Interpreter interpreter;
 
     //Get the file!
     input_file_name = input_file_name_in;
@@ -71,11 +72,11 @@ int Program::run(char* input_file_name_in, char* output_file_name_in)
     output_CPP = "";
     /*
     output_CPP = parser.getCPP();
-
+*/
     output_CPP = output_CPP + "\n\n//INFO SECTION!!!!\n\n";
     info_gen.generate(parser.getTree());
     output_CPP = output_CPP + info_gen.getOutput();
-*/
+
     output_CPP = output_CPP + "\n\n//C code!!!!!\n\n";
     ccode_gen.generate(parser.getTree());
     output_CPP = output_CPP + ccode_gen.getOutput();
@@ -85,6 +86,11 @@ int Program::run(char* input_file_name_in, char* output_file_name_in)
     output_file.close();
 
     std::cout << "Program has been sucessfuly compiled into C/C++ and saved!\n";
+
+    std::cout << "Do you want to interpret the program? (Y/N):";
+    std::cin >> do_interpret;
+    if (do_interpret == "y" || do_interpret == "y")
+        interpreter.interpret();
 
     return 0;
 }

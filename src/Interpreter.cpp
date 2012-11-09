@@ -1,17 +1,17 @@
-#include "CCodeGenerator.h"
+#include "Interpreter.h"
 
 
-CCodeGenerator::CCodeGenerator()
+Interpreter::Interpreter()
 {
     //ctor
 }
 
-CCodeGenerator::~CCodeGenerator()
+Interpreter::~Interpreter()
 {
     //dtor
 }
 
-void CCodeGenerator::generate(AbstractSyntaxTree* tree)
+void Interpreter::generate(AbstractSyntaxTree* tree)
 {
 	output_c = "#include <stdio.h>\n\n";
 	if (tree->root.num_children)
@@ -23,19 +23,19 @@ void CCodeGenerator::generate(AbstractSyntaxTree* tree)
 	}
 }
 
-std::string CCodeGenerator::toString(int in)
+std::string Interpreter::toString(int in)
 {
 	std::stringstream out_ss;
 	out_ss << in;
 	return out_ss.str();
 }
 
-std::string CCodeGenerator::getOutput()
+std::string Interpreter::getOutput()
 {
 	return output_c;
 }
 
-std::string CCodeGenerator::doOperatorSymbol(ASTNode_Prototype_Function_Builtin::builtin_type type_in)
+std::string Interpreter::doOperatorSymbol(ASTNode_Prototype_Function_Builtin::builtin_type type_in)
 {
     switch (type_in)
     {
@@ -100,7 +100,7 @@ std::string CCodeGenerator::doOperatorSymbol(ASTNode_Prototype_Function_Builtin:
     }
 }
 
-std::string CCodeGenerator::doValueType(Value::value_type type_in)
+std::string Interpreter::doValueType(Value::value_type type_in)
 {
 	    switch (type_in)
     {
@@ -153,7 +153,7 @@ std::string CCodeGenerator::doValueType(Value::value_type type_in)
     }
 }
 
-void CCodeGenerator::do_node(ASTNode* current_node, std::string prefix, std::string ending_statement)				//The prefix is added to each line added to the output, so that we can have multiple indents through recursive functions
+void Interpreter::do_node(ASTNode* current_node, std::string prefix, std::string ending_statement)				//The prefix is added to each line added to the output, so that we can have multiple indents through recursive functions
 {
 	switch (current_node->type)
 	{
