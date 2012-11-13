@@ -22,8 +22,6 @@ int WTS_Parser::set_string(std::string input_string)
 int WTS_Parser::parse()
 {
     //Do the parse work!
-    //The standard opening
-    cpp_output = "#include <iostream>\n";
 
     std::string current_word;
     while (!reached_end)
@@ -35,10 +33,8 @@ int WTS_Parser::parse()
             reached_end = true;
         } else if (current_word[0] == '#')                          //If comment
         {
-            if (current_word[current_word.length()-1] == '\n')      //If a one word comment (line ending right after word), just make a comment with the one word
-                cpp_output.append("//" + current_word);
-            else                                                    //If multiple word comment, add the rest of the line (which has newline in it, if we don't truncate)
-                cpp_output.append("//" + current_word + reader.line(false));
+            //if (current_word[current_word.length()-1] == '\n')      //If a one word comment (line ending right after word), just make a comment with the one word
+            //else                                                    //If multiple word comment, add the rest of the line (which has newline in it, if we don't truncate)
 
         } else {
             Value* return_value = do_token(reader.truncate_end(current_word));            //Evaluate the token, which is the word without the ending char
@@ -54,11 +50,6 @@ int WTS_Parser::parse()
     std::cout << "Done parsing!\n";
 
     return 0;
-}
-
-std::string WTS_Parser::getCPP()
-{
-    return cpp_output;
 }
 
 AbstractSyntaxTree* WTS_Parser::getTree()
@@ -82,13 +73,11 @@ Value* WTS_Parser::do_token(std::string token)
         ASTNode_Variable* variable = tree.variables[token];        //Look up variables in the AST's map, if exists, get the pointer, put it in a Value, and return its pointer
         if (variable)
         {
-            cpp_output += token;
             return new Value(variable); // 
         }
         Value* number_value = new Value;
         if (number_value->makeNumber(token))                        //If the conversion to a number works, return the value with the number.
         {
-            cpp_output += token;
             return number_value;
         }
         delete number_value;                                        //If not, delete and clean up
@@ -104,8 +93,6 @@ Value* WTS_Parser::wts_begin_function(std::string token)
     std::string return_type = reader.word();
     std::string function_name = reader.word();
 
-    cpp_output += "int " + function_name + "() {\n";
-
     ASTNode_Prototype_Function* new_function = new ASTNode_Prototype_Function;      //Create a new function
     new_function->return_value->val_type = getValueType(return_type);
     new_function->name = function_name;                                             //Name the function the supplied name
@@ -118,16 +105,15 @@ Value* WTS_Parser::wts_begin_function(std::string token)
 }
 Value* WTS_Parser::wts_end_function(std::string token)
 {
-    cpp_output += "return 0;\n}\n";
-
-    tree.current_node = tree.current_node->parent->parent;                                    //Get the parent of our parent, that is the node the function was defigned in
+    tree.current_node = tree.current_node->parent->parent;                          //Get the parent of our parent, that is the node the function was defigned in
                                                                                     //current node is the block->function->function's parent
+                                                                                    //Should be the root
+    //tree.current_node = &tree.root;
     return NULL;
 }
 Value* WTS_Parser::wts_go_function(std::string token)
 {
     std::string call_name = reader.word();
-    cpp_output += call_name + "()";
 
     ASTNode_Call* new_call = new ASTNode_Call;
     new_call->name = call_name;
@@ -142,7 +128,6 @@ Value* WTS_Parser::wts_go_function(std::string token)
 Value* WTS_Parser::wts_variable(std::string token, Value::value_type incoming_type) //This function creates a variable of the appropriet type. It is called by the below functions.
 {
     std::string variable_name = reader.word();
-    cpp_output += "variable " + variable_name;
 
     ASTNode_Variable* new_variable = new ASTNode_Variable;
     new_variable->name = variable_name;
@@ -174,17 +159,13 @@ Value* WTS_Parser::wts_boolean(std::string token)
 
 Value* WTS_Parser::wts_end_statement(std::string token)
 {
-    cpp_output += token + "\n";
     return NULL;
     //No representation for an end of statement in the AST. If the final language uses end_statements, it will be in the upper parts of the parser
 }
 Value* WTS_Parser::wts_binary_operator(std::string token)
 {
-    cpp_output += "( ";
     Value* param1 = do_token(reader.word());
-    cpp_output += " " + token + " ";
     Value* param2 = do_token(reader.word());
-    cpp_output += " )";
 
     std::cout << "wts_binary_operator: " << token << "\n";
 
@@ -205,9 +186,7 @@ Value* WTS_Parser::wts_binary_operator(std::string token)
 
 Value* WTS_Parser::wts_unary_operator(std::string token)
 {
-    cpp_output += "( ";
     Value* param1 = do_token(reader.word());
-    cpp_output += " " + token + " )";
 
     std::cout << "wts_unary_operator: " << token << "\n";
 
@@ -227,16 +206,11 @@ Value* WTS_Parser::wts_unary_operator(std::string token)
 
 Value* WTS_Parser::wts_begin_if(std::string token)
 {
-    cpp_output += "if ( ";
-
 
     ASTNode_Statement* new_if_statement = new ASTNode_Statement;      //Create a new statement
     tree.current_node->addChild(new_if_statement);                                      //Add the new statement node to the current node
     new_if_statement->statement_type = ASTNode_Statement::if_statement;
     new_if_statement->condition = do_token(reader.word());
-
-
-    cpp_output += ")\n{\n";
 
 
     if (new_if_statement->condition)
@@ -254,22 +228,16 @@ Value* WTS_Parser::wts_begin_if(std::string token)
 }
 Value* WTS_Parser::wts_end_if(std::string token)
 {
-    cpp_output += "}\n";
     tree.current_node = tree.current_node->parent->parent;
     return NULL;
 }
 Value* WTS_Parser::wts_begin_while(std::string token)
 {
-    cpp_output += "while ( ";
-
 
     ASTNode_Statement* new_while_statement = new ASTNode_Statement;      //Create a new statement
     tree.current_node->addChild(new_while_statement);                                      //Add the new statement node to the current node
     new_while_statement->statement_type = ASTNode_Statement::while_statement;
     new_while_statement->condition = do_token(reader.word());
-
-
-    cpp_output += ")\n{\n";
 
 
     if (new_while_statement->condition)
@@ -289,7 +257,6 @@ Value* WTS_Parser::wts_begin_while(std::string token)
 }
 Value* WTS_Parser::wts_end_while(std::string token)
 {
-    cpp_output += "}\n";
     tree.current_node = tree.current_node->parent->parent;
     return NULL;
 }

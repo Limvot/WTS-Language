@@ -166,8 +166,6 @@ void CCodeGenerator::do_node(ASTNode* current_node, std::string prefix, std::str
 			ASTNode_Call* current_call_node = static_cast<ASTNode_Call*>(current_node);
 			if (current_call_node->function->func_type == ASTNode_Prototype_Function::func_builtin)
 			{
-				std::cout << "Builtin operator prefix:" << prefix <<"||\n";
-
 				ASTNode_Prototype_Function_Builtin* current_builtin_function = static_cast<ASTNode_Prototype_Function_Builtin*>(current_call_node->function);
 				if (current_builtin_function->is_binary)																//Binary operator
 				{

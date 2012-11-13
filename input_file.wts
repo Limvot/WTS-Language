@@ -22,7 +22,7 @@ begin int math_func
 			print 4 ;
 		endif
 
-			if != a 10
+		if != a 10
 			print 4 ;
 		endif
 
@@ -70,7 +70,7 @@ begin int sieve
 		if == % number current_num 0
 			= is_prime 0 ;
 		endif
-		= current_num + current_num 1;
+		= current_num + current_num 1 ;
 
 	endwhile
 
@@ -83,7 +83,14 @@ begin int main
 
 	#go print_hello_func ;
 	#go math_func ;
+	#go fib ;
+	go sieve ;
 	go fib ;
 	go sieve ;
+	go fib ;
+	print 42 ;
+	print 43 ;
 
-end main
+end
+
+

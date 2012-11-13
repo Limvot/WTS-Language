@@ -65,7 +65,6 @@ int Program::run(char* input_file_name_in, char* output_file_name_in)
     catch (SyntaxErrorException* syntax_error)
     {
         std::cout << "!!!!!!|||||||||A syntax error has occured, quiting...!!!!!!|||||||||\n";
-        std::cout << parser.getCPP();
         return -1;
     }
 
