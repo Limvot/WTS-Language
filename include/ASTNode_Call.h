@@ -16,6 +16,7 @@ class ASTNode_Call : public ASTNode
 {
     public:
         ASTNode_Call();
+        ASTNode_Call(ASTNode_Prototype_Function* incoming_function);
         virtual ~ASTNode_Call();
         ASTNode_Prototype_Function* function;
         std::vector<Value*> parameters;

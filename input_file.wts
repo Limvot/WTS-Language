@@ -43,6 +43,7 @@ int c ;
 = c 1 ;
 
 print 1 ;
+print a ;
 
 while < a 100
 print a ;
@@ -50,6 +51,8 @@ print a ;
 = a + a b ;
 = b c ;
 endwhile
+
+print a ;
 
 end
 

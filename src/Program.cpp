@@ -88,9 +88,10 @@ int Program::run(char* input_file_name_in, char* output_file_name_in)
     std::cout << "Program has been sucessfuly compiled into C/C++ and saved!\n";
 
     std::cout << "Do you want to interpret the program? (Y/N):";
+    std::string do_interpret;
     std::cin >> do_interpret;
     if (do_interpret == "y" || do_interpret == "y")
-        interpreter.interpret();
+        interpreter.interpret(parser.getTree());
 
     return 0;
 }

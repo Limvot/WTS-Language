@@ -5,12 +5,12 @@
 #include <string>
 #include <sstream>
 
-#include "CodeGenerator.h"
 #include "Value.h"
 #include "ASTNode_Variable.h"
 #include "ASTNode_Prototype_Function.h"
 #include "ASTNode_Prototype_Function_Builtin.h"
-
+#include "ASTNode_Call.h"
+#include "AbstractSyntaxTree.h"
 #include "ASTNode_Statement.h"
 
 #ifndef NULL
@@ -19,7 +19,7 @@
 
 
 
-class Interpreter : public CodeGenerator
+class Interpreter
 {
     public:
         Interpreter();
@@ -28,7 +28,7 @@ class Interpreter : public CodeGenerator
         std::string toString(int in);
 
         void interpret(AbstractSyntaxTree* tree);
-        void do_node(ASTNode* current_node, std::string prefix = std::string(""), std::string ending_statement = std::string(""));
+        Value* do_node(ASTNode* current_node);
         std::string getOutput();
 
         std::string doOperatorSymbol(ASTNode_Prototype_Function_Builtin::builtin_type);

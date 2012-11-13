@@ -6,6 +6,12 @@ ASTNode_Call::ASTNode_Call()
     function = NULL;
 }
 
+ASTNode_Call::ASTNode_Call(ASTNode_Prototype_Function* incoming_function)
+{
+	type = call;
+	function = incoming_function;
+}
+
 ASTNode_Call::~ASTNode_Call()
 {
     //dtor
