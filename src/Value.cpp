@@ -133,6 +133,13 @@ bool Value::makeNumber(std::string input_string)
             val_type = typ_double;
             data.dat_double = atof(input_string.c_str());
             return true;
+        } else {
+            if (input_string == "0")                        //atoi returns 0 if not valid conversion, but what if the number is 0? Here we check for it
+            {
+                val_type = typ_int;
+                data.dat_int = 0;
+                return true;
+            }
         }
     }
     return false;

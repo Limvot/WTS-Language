@@ -310,6 +310,7 @@ void WTS_Parser::initialize_map()
     wts_KeyWordsMap["-"] = &WTS_Parser::wts_binary_operator;
     wts_KeyWordsMap["*"] = &WTS_Parser::wts_binary_operator;
     wts_KeyWordsMap["/"] = &WTS_Parser::wts_binary_operator;
+    wts_KeyWordsMap["%"] = &WTS_Parser::wts_binary_operator;
     wts_KeyWordsMap["^"] = &WTS_Parser::wts_binary_operator;
     wts_KeyWordsMap["if"] = &WTS_Parser::wts_begin_if;
     wts_KeyWordsMap["endif"] = &WTS_Parser::wts_end_if;
@@ -333,6 +334,7 @@ void WTS_Parser::initialize_builtin_functions()
     tree.functions["-"] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::subtraction, "subtraction");
     tree.functions["*"] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::multiplication, "multiplication");
     tree.functions["/"] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::division, "division");
+    tree.functions["%"] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::modulus, "modulus");
     tree.functions["^"] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::exponent, "exponent");
     tree.functions["=="] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::equal, "equal");
     tree.functions["!="] = new ASTNode_Prototype_Function_Builtin(ASTNode_Prototype_Function_Builtin::not_equal, "not_equal");

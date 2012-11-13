@@ -44,7 +44,7 @@ std::string CCodeGenerator::doOperatorSymbol(ASTNode_Prototype_Function_Builtin:
     		break;
 
     	case ASTNode_Prototype_Function_Builtin:: print:
-    		return std::string("printf(\"%i\", ");
+    		return std::string("printf(\"%i\\n\", ");
     		break;
 
     	case ASTNode_Prototype_Function_Builtin:: assignment:
@@ -65,6 +65,10 @@ std::string CCodeGenerator::doOperatorSymbol(ASTNode_Prototype_Function_Builtin:
 
     	case ASTNode_Prototype_Function_Builtin:: division:
     		return std::string("/");
+    		break;
+
+    	case ASTNode_Prototype_Function_Builtin:: modulus:
+    		return std::string("%");
     		break;
 
     	case ASTNode_Prototype_Function_Builtin:: exponent:

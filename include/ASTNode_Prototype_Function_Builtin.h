@@ -18,6 +18,7 @@ class ASTNode_Prototype_Function_Builtin : public ASTNode_Prototype_Function
         					subtraction,
         					multiplication,
         					division,
+                            modulus,
         					exponent,
         					equal,
         					not_equal,

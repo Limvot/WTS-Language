@@ -96,6 +96,9 @@ Value* Interpreter::do_node(ASTNode* current_node)				//The prefix is added to e
 						case ASTNode_Prototype_Function_Builtin::exponent:
 							return new Value(first_param_value->data.dat_int ^ second_param_value->data.dat_int);	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 						
+						case ASTNode_Prototype_Function_Builtin::modulus:
+							return new Value(first_param_value->data.dat_int % second_param_value->data.dat_int);	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
+						
 						case ASTNode_Prototype_Function_Builtin::equal:
 							return new Value(int(first_param_value->data.dat_int == second_param_value->data.dat_int));	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 						
