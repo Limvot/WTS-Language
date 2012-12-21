@@ -20,9 +20,11 @@ void Interpreter::interpret(AbstractSyntaxTree* tree)
 			do_node(tree->root.children[i]);							//Go through each child of the root node
 		}
 	}
+	output_info +=  "Calling main!\n";
 	std::cout << "Calling main!\n";
 	do_node(new ASTNode_Call(tree->functions["main"]));	//Get the main function pointer, create a call to it, cast to node, then interpret it
 	std::cout << "Done with main!\n";
+	output_info +=  "Done with main!\n";
 }
 
 std::string Interpreter::toString(int in)
@@ -38,17 +40,17 @@ Value* Interpreter::do_node(ASTNode* current_node)				//The prefix is added to e
 	{
 		case ASTNode::call:
 		{
-			std::cout << "Interpreting a call\n";
+			output_info +=  "Interpreting a call\n";
 
 			ASTNode_Call* current_call_node = static_cast<ASTNode_Call*>(current_node);
 			if (current_call_node->function->func_type == ASTNode_Prototype_Function::func_builtin)
 			{
-				std::cout << "Interpreting a builtin function\n";
+				output_info +=  "Interpreting a builtin function\n";
 
 				ASTNode_Prototype_Function_Builtin* current_builtin_function = static_cast<ASTNode_Prototype_Function_Builtin*>(current_call_node->function);
 				if (current_builtin_function->is_binary)																//Binary operator
 				{
-					std::cout << "Interpreting a binary operator\n";
+					output_info +=  "Interpreting a binary operator\n";
 					Value* current_value_node = NULL;
 					Value* first_param_value = NULL;
 					Value* second_param_value = NULL;
@@ -62,7 +64,7 @@ Value* Interpreter::do_node(ASTNode* current_node)				//The prefix is added to e
 							first_param_value = do_node(current_value_node);
 						}
 						else
-							std::cout << "NO FIRST PARAMETER!\n";
+							output_info +=  "NO FIRST PARAMETER!\n";
 					}
 
 					//Second Param
@@ -72,12 +74,14 @@ Value* Interpreter::do_node(ASTNode* current_node)				//The prefix is added to e
 						second_param_value = do_node(current_value_node);
 					}
 					else
-						std::cout << "NO SECOND PARAMETER!\n";
+						output_info +=  "NO SECOND PARAMETER!\n";
 
 					//DO BUILTIN FUNCTIONS!!!!!
 					switch(current_builtin_function->operator_type)
 					{
 						case ASTNode_Prototype_Function_Builtin::assignment:
+							//if (current_call_node->parameters[0]->data.dat_variable->value != NULL)
+							//	delete current_call_node->parameters[0]->data.dat_variable->value;
 							current_call_node->parameters[0]->data.dat_variable->value = second_param_value;
 							break;
 
@@ -118,12 +122,12 @@ Value* Interpreter::do_node(ASTNode* current_node)				//The prefix is added to e
 							return new Value(int(first_param_value->data.dat_int <=second_param_value->data.dat_int));	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 						
 						default:
-							std::cout << "Hmm?! No builtin operator that matches!\n";
+							output_info +=  "Hmm?! No builtin operator that matches!\n";
 					}
 
 				} else {																								//Unary operator!
 
-					std::cout << "Interpreting a unary operator\n";
+					output_info +=  "Interpreting a unary operator\n";
 
 					//Only param
 					Value* current_value_node = current_call_node->parameters[0];
@@ -133,23 +137,27 @@ Value* Interpreter::do_node(ASTNode* current_node)				//The prefix is added to e
 						first_param_value = do_node(current_value_node);
 					}
 					else
-						std::cout << "NO FIRST PARAMETER FOR UNARY\n";
+						output_info +=  "NO FIRST PARAMETER FOR UNARY\n";
 
 					//DO BUILTIN FUNCTIONS!!!!!!
 					switch(current_builtin_function->operator_type)
 					{
 						case ASTNode_Prototype_Function_Builtin::print:
-							std::cout << first_param_value->data.dat_int << "\n";
+						{
+							std::string toPrint = toString(first_param_value->data.dat_int) + "\n";
+							std::cout << toPrint;
+							output_info += toPrint;
 							break;
+						}
 
 						default:
-							std::cout << "Hmm?! No builtin operator that matches!\n";
+							output_info +=  "Hmm?! No builtin operator that matches!\n";
 					}
 				}
 
 			} else {																									//A user function!
 
-				std::cout << "Interpretign a custom function\n";
+				output_info +=  "Interperting a custom function\n";
 
 				for (unsigned int i = 0; i < current_call_node->parameters.size(); i++)
 				{
@@ -161,57 +169,57 @@ Value* Interpreter::do_node(ASTNode* current_node)				//The prefix is added to e
 						//CUSTOM FUNCTIONS DON'T ALLOW PARAMETERS YET
 					}
 					else
-						std::cout << "BAD PARAMETER!!!!!\n";
+						output_info +=  "BAD PARAMETER!!!!!\n";
 				}
 				//Do regular functions!
-				std::cout << "Interpreting the custom function's body\n";
+				output_info +=  "Interpreting the custom function's body\n";
 				do_node(current_call_node->function->function_body);
 			}
 			break;
 		}
 
 		case ASTNode::variable:
-			std::cout << "Interpreting a variable\n";
+			output_info +=  "Interpreting a variable\n";
 			if (current_node)
 				return (static_cast<ASTNode_Variable*>(current_node)->value);
 			else
-				std::cout << "Why the heck is an empty node passed through with a type of variable?\n";
+				output_info +=  "Why the heck is an empty node passed through with a type of variable?\n";
 			break;
 
 		case ASTNode::statement:
 		{
-			std::cout << "Interpreting a statement:";
+			output_info +=  "Interpreting a statement:";
 
 			ASTNode_Statement* statement_node = dynamic_cast<ASTNode_Statement*> (current_node);
 				switch (statement_node->statement_type)
 				{
 					case ASTNode_Statement::if_statement:
 					{
-						std::cout << "If statement\n";
+						output_info +=  "If statement\n";
 						if (do_node(statement_node->condition)->data.dat_int)
 							do_node(statement_node->first_option);
 						break;
 					}
 
 					case ASTNode_Statement::while_statement:
-						std::cout << "While statement\n";
+						output_info +=  "While statement\n";
 						while(do_node(statement_node->condition)->data.dat_int)
 						{
-							std::cout << "About to do the value\n";
-							std::cout << "The value for the while loop is:" << do_node(statement_node->condition)->data.dat_int << "\n";
+							output_info +=  "About to do the value\n";
+							output_info +=  "The value for the while loop is:" + toString( do_node(statement_node->condition)->data.dat_int ) + "\n";
 							do_node(statement_node->first_option);
 						}
 						break;
 
 					default:
-							std::cout << "WHY THE HECK IS THIS STATEMENT NOT AN IF OR WHILE?\n";
+							output_info +=  "WHY THE HECK IS THIS STATEMENT NOT AN IF OR WHILE?\n";
 						break;
 				}
 			break;
 		}
 
 		case ASTNode::block:
-			std::cout << "Interpreting a block\n";
+			output_info +=  "Interpreting a block\n";
 			for (unsigned int i = 0; i < current_node->children.size(); i++)
 			{
 				do_node(current_node->children[i]);
@@ -219,12 +227,12 @@ Value* Interpreter::do_node(ASTNode* current_node)				//The prefix is added to e
 			break;
 
 		case ASTNode::prototype:
-			std::cout << "Plain prototype: Why are we here?\n";
+			output_info +=  "Plain prototype: Why are we here?\n";
 			break;
 
 		case ASTNode::prototype_function:
 		{
-			std::cout << "Would interpret this prototype_function if we didn't just ignore them...\n";
+			output_info +=  "Would interpret this prototype_function if we didn't just ignore them...\n";
 			//Do nothing, is a prototype. Evaluate when called
 			//ASTNode_Prototype_Function* function_prototype = static_cast<ASTNode_Prototype_Function*> (current_node);
 			//Do nothing, is a prototype. Evaluate when called
@@ -232,27 +240,27 @@ Value* Interpreter::do_node(ASTNode* current_node)				//The prefix is added to e
 		}
 
 		case ASTNode::prototype_object:
-			std::cout << "Object prototype: Again, why are we here?\n";
+			output_info +=  "Object prototype: Again, why are we here?\n";
 			break;
 
 		case ASTNode::value:
 		{
-			std::cout << "Interpreting a value:";
+			output_info +=  "Interpreting a value:";
 			Value* current_value_node = dynamic_cast<Value*>(current_node);
 			switch (current_value_node->val_type)
 			{
 				case Value::typ_call:
-					std::cout << "is a call\n";
+					output_info +=  "is a call\n";
 					return(do_node(current_value_node->data.dat_call));	//If a call, evaluate
 					break;
 
 				case Value::typ_int:
-					std::cout << "is a int\n";
+					output_info +=  "is a int\n";
 					return(current_value_node);									//If a int, return this one
 					break;
 
 				case Value::typ_variable:
-					std::cout << "is a variable\n";
+					output_info +=  "is a variable\n";
 					return(do_node(current_value_node->data.dat_variable));	//If a variable, do it
 					break;
 			}
@@ -260,7 +268,7 @@ Value* Interpreter::do_node(ASTNode* current_node)				//The prefix is added to e
 		}
 
 		case ASTNode::basic:
-			std::cout << "Basic node: Can we get here? I don't even know anymore...\n";
+			output_info +=  "Basic node: Can we get here? I don't even know anymore...\n";
 			break;
 	}
 }

@@ -165,7 +165,7 @@ Value* WTS_Parser::wts_end_statement(std::string token)
 Value* WTS_Parser::wts_binary_operator(std::string token)
 {
     Value* param1 = do_token(reader.word());
-    Value* param2 = do_token(reader.word());
+    Value* param2 = do_token(reader.word());    //Will be the correct token because the do_token for param1 will keep getting tokens until done
 
     std::cout << "wts_binary_operator: " << token << "\n";
 

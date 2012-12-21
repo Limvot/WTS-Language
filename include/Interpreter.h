@@ -36,7 +36,7 @@ class Interpreter
         
         //ASTNode*
     protected:
-    	std::string output_c;
+    	std::string output_info;
     private:
 };
 

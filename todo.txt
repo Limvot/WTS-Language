@@ -1,0 +1,12 @@
+todo.txt
+
+proper scoping of variables
+function parameters
+function return values (how does this work with go? might have to remove go altogether, which could be difficult)
+
+objects
+	Probally much like functions, except consists of two sub nodes, a block of function prototypes and a block of data members
+		The C code generator would turn this into a struct functions that take a struct as the first parameter.
+			Would use scoping to determine the correct variable at build time.
+		Unless we make all this visiable and go Python type here...
+			It really does make conversion simple...
