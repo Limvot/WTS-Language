@@ -10,6 +10,7 @@ class Block : public ASTNode
 {
     public:
         Block();
+        Block(ASTNode*);
         virtual ~Block();
     protected:
     private:

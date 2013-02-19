@@ -25,7 +25,7 @@ int Program::run(char* input_file_name_in, char* output_file_name_in)
     GenInfoCodeGenerator info_gen;
     Interpreter interpreter;
 
-    //Get the file!
+    //Get the file
     input_file_name = input_file_name_in;
     std::cout << "Hello! Welcome to the WTS (Way Too Simple) Language compiler!" << std::endl;
     std::cout << "You have chosen to compile the file: " << input_file_name << "\n";
@@ -56,8 +56,8 @@ int Program::run(char* input_file_name_in, char* output_file_name_in)
 
     input_file.close();
 
-    //Parse this thing!
-    parser.set_string(input_file_string);
+    //Parse
+    parser.setString(input_file_string);
     try
     {
         parser.parse();

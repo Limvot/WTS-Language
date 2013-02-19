@@ -4,7 +4,7 @@ ASTNode::ASTNode()
 {
     parent = NULL;
     num_children = 0;
-    name = "";
+    name = "node";
     type = basic;
 }
 
@@ -55,7 +55,7 @@ int ASTNode::deleteChild(ASTNode* delete_child)
     int found_child = findChild(delete_child);
     if (found_child >= 0)
     {
-        children.erase(children.begin()+found_child);               //Erase and delete the child (the child at index from begining iterator
+        children.erase(children.begin()+found_child);//Erase and delete the child (the child at index from begining iterator
         num_children--;
     }
     else
@@ -65,7 +65,7 @@ int ASTNode::deleteChild(ASTNode* delete_child)
     return 0;                                       //If no error, return sucess
 }
 
-int ASTNode::findChild(ASTNode* find_child)                     //Replace with an unorderd_map lookup in the future?
+int ASTNode::findChild(ASTNode* find_child)         //Replace with an unorderd_map lookup in the future?
 {
     for (unsigned int i = 0; i < num_children; i++)
     {
@@ -74,4 +74,20 @@ int ASTNode::findChild(ASTNode* find_child)                     //Replace with a
     }
     return -1;                                      //Couldn't find child, return error
 }
+
+bool ASTNode::hasParent() {
+    return (parent != NULL);
+}
+
+void ASTNode::setName(std::string name) {
+    this->name = name;
+}
+
+std::string ASTNode::getLineage() {
+    std::string lineage = "";
+    if (hasParent())
+        lineage = parent->getLineage() + "->";
+    return(lineage + name);
+}
+
 

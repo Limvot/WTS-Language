@@ -1,45 +1,51 @@
-#include "string_reader.h"
+#include "StringReader.h"
 
-string_reader::string_reader()
+StringReader::StringReader()
 {
     str_pos = 0;
 }
 
-string_reader::string_reader(std::string input_string)
+StringReader::StringReader(std::string input_string)
 {
     str_pos = 0;
-    end_reached = false;
-    set_string(input_string);
+    setString(input_string);
 }
 
-string_reader::~string_reader()
+StringReader::~StringReader()
 {
     //dtor
 }
 
-void string_reader::set_string(std::string input_string)
+void StringReader::setString(std::string input_string)
 {
     rd_string = input_string;
     end_reached = false;
 }
 
-std::string string_reader::word(bool truncate_end)
+std::string StringReader::word(bool truncateEnd)
 {
     std::vector<std::string> stop_chars;
     stop_chars.push_back(" ");
     stop_chars.push_back("\n");
     stop_chars.push_back("\t");
-    return get_tokens(stop_chars, truncate_end);
+    
+
+    std::string result = getTokens(stop_chars, truncateEnd);
+    while (result == " " || result == "\n" || result == "\t")
+    {
+        result = getTokens(stop_chars, truncateEnd);
+    }
+    return(result);
 }
 
-std::string string_reader::line(bool truncate_end)
+std::string StringReader::line(bool truncateEnd)
 {
     std::vector<std::string> stop_chars;
     stop_chars.push_back("\n");
-    return get_tokens(stop_chars, truncate_end);
+    return getTokens(stop_chars, truncateEnd);
 }
 
-std::string string_reader::get_tokens(std::vector<std::string> stop_chars, bool truncate_end)
+std::string StringReader::getTokens(std::vector<std::string> stop_chars, bool truncateEnd)
 {
     int found_pos, new_found_pos;
     std::string stop_char;
@@ -74,7 +80,7 @@ std::string string_reader::get_tokens(std::vector<std::string> stop_chars, bool 
 
         std::string string_section;
 
-        if (truncate_end)                                       //If we want to get rid of the delimiting character, which is the default, don't add the last char. Note we have to increase str_pos by one manually later
+        if (truncateEnd)                                       //If we want to get rid of the delimiting character, which is the default, don't add the last char. Note we have to increase str_pos by one manually later
             found_pos -= 1;
 
         for (; str_pos <= found_pos; str_pos++)
@@ -82,13 +88,13 @@ std::string string_reader::get_tokens(std::vector<std::string> stop_chars, bool 
             string_section = string_section + rd_string[str_pos];
         }
 
-        if (truncate_end)                                       //Ok, we didn't add the last char, but str_pos now points at that char. So we move it one ahead.
+        if (truncateEnd)                                       //Ok, we didn't add the last char, but str_pos now points at that char. So we move it one ahead.
             str_pos++;
         return string_section;
     }
 }
 
-std::string string_reader::truncate_end(std::string to_truncate)
+std::string StringReader::truncateEnd(std::string to_truncate)
 {
     std::string to_return = "";
     for (unsigned int i = 0; i < to_truncate.length()-1; i++)

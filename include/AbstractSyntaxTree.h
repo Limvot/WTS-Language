@@ -1,6 +1,7 @@
 #ifndef ABSTRACTSYNTAXTREE_H
 #define ABSTRACTSYNTAXTREE_H
 
+#include <iostream>
 #include <vector>
 #include <map>
 #include <string>
@@ -21,10 +22,15 @@ class AbstractSyntaxTree
         AbstractSyntaxTree();
         ~AbstractSyntaxTree();
 
-        ASTNode root;
-        ASTNode* current_node;
-        std::map<std::string, ASTNode_Prototype_Function*> functions;   //Be careful, I'm not sure but this could segfault if it deletes functiosn and the tree deletes the functions
-        std::map<std::string, ASTNode_Variable*> variables;                        //Ditto for variables
+        bool ascend();
+        bool ascendToUpperBlock();
+        bool setCurrentNode(ASTNode* setNode);
+
+        ASTNode* root;
+        ASTNode* currentNode;
+        std::map<std::string, ASTNode_Prototype_Function*> functions;
+        std::map<std::string, ASTNode_Variable*> variables;
+        
     protected:
     private:
 };

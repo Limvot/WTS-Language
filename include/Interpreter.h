@@ -28,7 +28,8 @@ class Interpreter
         std::string toString(int in);
 
         void interpret(AbstractSyntaxTree* tree);
-        Value* do_node(ASTNode* current_node);
+        Value* do_node(ASTNode* currentNode);
+        Value* doCallNode(ASTNode* currentNode);
         std::string getOutput();
 
         std::string doOperatorSymbol(ASTNode_Prototype_Function_Builtin::builtin_type);

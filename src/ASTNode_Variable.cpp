@@ -3,8 +3,9 @@
 ASTNode_Variable::ASTNode_Variable()
 {
     type = variable;
+    name = "variable";
     value = new Value;
-    value->parent = this;
+    value->setParent(this);
 }
 
 ASTNode_Variable::~ASTNode_Variable()

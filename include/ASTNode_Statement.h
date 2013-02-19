@@ -15,8 +15,8 @@ class ASTNode_Statement : public ASTNode
         					for_statement,
         					do_while_statement} statement_type;
         Value* condition;
-        Block* first_option;
-        Block* second_option;
+        Value* first_option;    //Values can be blocks
+        Value* second_option;
     protected:
     private:
 };

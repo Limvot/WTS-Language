@@ -3,6 +3,7 @@
 ASTNode_Statement::ASTNode_Statement()
 {
     type = statement;
+    name = "statement";
     condition = NULL;
     first_option = NULL;
     second_option = NULL;

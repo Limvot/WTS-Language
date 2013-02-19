@@ -6,6 +6,7 @@
 #include <ASTNode.h>
 #include <ASTNode_Call.h>
 #include <ASTNode_Variable.h>
+#include <Block.h>
 
 
 class ASTNode_Call; //Fix the circular dependency, close the loop.
@@ -15,6 +16,7 @@ class Value : public ASTNode
 {
     public:
         Value();
+        Value(ASTNode*);
         Value(void* in_void_ptr);
         Value(int in_int);
         Value(unsigned int in_uint);
@@ -24,6 +26,7 @@ class Value : public ASTNode
         Value(char in_char);
         Value(ASTNode_Call* in_call);
         Value(ASTNode_Variable* in_variable);
+        Value(Block* in_block);
 
         virtual ~Value();
         
@@ -37,7 +40,8 @@ class Value : public ASTNode
                             typ_variable,
                             typ_object,
                             typ_function,
-                            typ_call }  val_type;
+                            typ_call,
+                            typ_block }  val_type;
         union  {void* dat_void_ptr;
                 int   dat_int;
                 unsigned int dat_uint;
@@ -48,7 +52,8 @@ class Value : public ASTNode
                 ASTNode_Variable* dat_variable;
                 //Figure out how to add support for object instances
                 //Figure out how to add support for function pointers
-                ASTNode_Call* dat_call;} data;
+                ASTNode_Call* dat_call;
+                Block* dat_block;} data;
 
         value_type isNumber(std::string input_string);
         bool makeNumber(std::string input_string);

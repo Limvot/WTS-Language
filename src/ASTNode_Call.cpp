@@ -3,6 +3,7 @@
 ASTNode_Call::ASTNode_Call()
 {
     type = call;
+    name = "call";
     function = NULL;
 }
 

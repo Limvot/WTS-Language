@@ -23,6 +23,11 @@ class ASTNode
         int deleteChild(ASTNode* delete_child);
         int findChild(ASTNode* find_child);
 
+        bool hasParent();
+
+        void setName(std::string name);
+        std::string getLineage();
+
         ASTNode* parent;
         std::vector<ASTNode*> children;
         unsigned int num_children;
