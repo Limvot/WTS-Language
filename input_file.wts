@@ -88,13 +88,10 @@ def int sieve
 #Main Function, entrence point of program
 def int main
 {
-	#go print_hello_func ;
-	#go math_func ;
-	#go fib ;
-	go sieve ;
-	go fib ;
-	go sieve ;
-	go fib ;
+	print_hello_func ;
+	math_func ;
+	sieve ;
+	fib ;
 	print 42 ;
 	print 43 ;
 }

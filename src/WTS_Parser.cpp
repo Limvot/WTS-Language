@@ -63,17 +63,16 @@ Value* WTS_Parser::doToken(std::string token)
     Value*(WTS_Parser::* function_pointer)(std::string) = wts_KeyWordsMap[token];
     if (function_pointer != 0)
     {
-        Value* dotok_return_value = (this->*function_pointer)(token);
-        std::cout << "This is what is returned from the function_pointer: " << dotok_return_value << "\n";
-        return dotok_return_value;
-    }
-    else
-    {
-        ASTNode_Variable* variable = tree.variables[token];        //Look up variables in the AST's map, if exists, get the pointer, put it in a Value, and return its pointer
+        return (this->*function_pointer)(token);
+    } else {
+        ASTNode_Variable* variable = tree.variables[token];         //Look up variables in the AST's map, if exists, get the pointer, put it in a Value, and return its pointer
         if (variable)
         {
             return new Value(variable); // 
+        } else if (tree.functions[token]) {
+            return wts_go_function(token);
         }
+
         Value* number_value = new Value;
         if (number_value->makeNumber(token))                        //If the conversion to a number works, return the value with the number.
         {
@@ -122,10 +121,9 @@ Value* WTS_Parser::wts_end_block(std::string token)
     return(NULL);
 }
 
-Value* WTS_Parser::wts_go_function(std::string token)
+//This one is special, it is not called by the wts_KeyWordsMap but by doToken directly if there is a match in the function map
+Value* WTS_Parser::wts_go_function(std::string call_name)
 {
-    std::string call_name = reader.word();
-
     ASTNode_Call* new_call = new ASTNode_Call;
     new_call->name = call_name;
     new_call->function = tree.functions[call_name];                                 //Look up the pointer to the function prototype in the tree's functions map, and assign it to the call's function prototype pointer
@@ -254,7 +252,6 @@ void WTS_Parser::initializeMap()
     wts_KeyWordsMap["def"] = &WTS_Parser::wts_begin_function;
     wts_KeyWordsMap["{"] = &WTS_Parser::wts_begin_block;
     wts_KeyWordsMap["}"] = &WTS_Parser::wts_end_block;
-    wts_KeyWordsMap["go"] = &WTS_Parser::wts_go_function;
     wts_KeyWordsMap["print"] = &WTS_Parser::wts_unary_operator;
     wts_KeyWordsMap["int"] = &WTS_Parser::wts_variable;
     wts_KeyWordsMap["uint"] = &WTS_Parser::wts_variable;
