@@ -157,24 +157,24 @@ std::string CCodeGenerator::doValueType(Value::value_type type_in)
     }
 }
 
-void CCodeGenerator::do_node(ASTNode* currentNode, std::string prefix, std::string ending_statement)				//The prefix is added to each line added to the output, so that we can have multiple indents through recursive functions
+void CCodeGenerator::do_node(ASTNode* currentNode, std::string prefix, Value* returnStatement)				//The prefix is added to each line added to the output, so that we can have multiple indents through recursive functions
 {
 	switch (currentNode->type)
 	{
 		case ASTNode::call:
-			doCallNode(currentNode, prefix, ending_statement);
+			doCallNode(currentNode, prefix);
 			break;
 
 		case ASTNode::variable:
-			doVariableNode(currentNode, prefix, ending_statement);
+			doVariableNode(currentNode, prefix);
 			break;
 
 		case ASTNode::statement:
-			doStatementNode(currentNode, prefix, ending_statement);
+			doStatementNode(currentNode, prefix);
 			break;
 
 		case ASTNode::block:
-			doBlockNode(currentNode, prefix, ending_statement);
+			doBlockNode(currentNode, prefix, returnStatement);
 			break;
 
 		case ASTNode::prototype:
@@ -182,7 +182,7 @@ void CCodeGenerator::do_node(ASTNode* currentNode, std::string prefix, std::stri
 			break;
 
 		case ASTNode::prototype_function:
-			doPrototypeFunctionNode(currentNode, prefix, ending_statement);
+			doPrototypeFunctionNode(currentNode, prefix);
 			break;
 
 		case ASTNode::prototype_object:
@@ -190,7 +190,7 @@ void CCodeGenerator::do_node(ASTNode* currentNode, std::string prefix, std::stri
 			break;
 
 		case ASTNode::value:
-			doValueNode(currentNode, prefix, ending_statement);
+			doValueNode(currentNode, prefix, returnStatement);
 			break;
 
 		case ASTNode::basic:
@@ -199,7 +199,7 @@ void CCodeGenerator::do_node(ASTNode* currentNode, std::string prefix, std::stri
 	}
 }
 
-void CCodeGenerator::doCallNode(ASTNode* currentNode, std::string prefix, std::string ending_statement)
+void CCodeGenerator::doCallNode(ASTNode* currentNode, std::string prefix)
 {
 	ASTNode_Call* current_call_node = static_cast<ASTNode_Call*>(currentNode);
 	if (current_call_node->function->func_type == ASTNode_Prototype_Function::func_builtin)
@@ -262,11 +262,11 @@ void CCodeGenerator::doCallNode(ASTNode* currentNode, std::string prefix, std::s
 	}
 }
 
-void CCodeGenerator::doVariableNode(ASTNode* currentNode, std::string prefix, std::string ending_statement) {
+void CCodeGenerator::doVariableNode(ASTNode* currentNode, std::string prefix) {
 	output_c += prefix + doValueType(static_cast<ASTNode_Variable*>(currentNode)->value->val_type) + " " + currentNode->name;
 }
 
-void CCodeGenerator::doStatementNode(ASTNode* currentNode, std::string prefix, std::string ending_statement) {
+void CCodeGenerator::doStatementNode(ASTNode* currentNode, std::string prefix) {
 
 	ASTNode_Statement* statement_node = dynamic_cast<ASTNode_Statement*> (currentNode);
 	switch (statement_node->statement_type)
@@ -292,7 +292,7 @@ void CCodeGenerator::doStatementNode(ASTNode* currentNode, std::string prefix, s
 	}
 }
 
-void CCodeGenerator::doBlockNode(ASTNode* currentNode, std::string prefix, std::string ending_statement) {
+void CCodeGenerator::doBlockNode(ASTNode* currentNode, std::string prefix, Value* returnStatement) {
 
 	output_c += prefix + "{\n";
 	for (unsigned int i = 0; i < currentNode->children.size(); i++)
@@ -300,21 +300,22 @@ void CCodeGenerator::doBlockNode(ASTNode* currentNode, std::string prefix, std::
 		do_node(currentNode->children[i], prefix+"\t");
 		output_c += ";\n";
 	}
-	if (ending_statement == "")
-		output_c += prefix + "\t" + ending_statement + "\n" + prefix + "}\n";
+	if (returnStatement) {
+		output_c += prefix + "return ";
+		do_node(returnStatement);
+	}
 	else
 		output_c += prefix + "}\n";
 }
 
-void CCodeGenerator::doPrototypeFunctionNode(ASTNode* currentNode, std::string prefix, std::string ending_statement) {
+void CCodeGenerator::doPrototypeFunctionNode(ASTNode* currentNode, std::string prefix) {
 
 	ASTNode_Prototype_Function* function_prototype = static_cast<ASTNode_Prototype_Function*> (currentNode);
-	//output_c += prefix + toString(function_prototype->return_value->val_type) + " " + currentNode->name + "()\n";
-	output_c += prefix + doValueType(function_prototype->return_value->val_type) + " " + currentNode->name + "()\n";
-	do_node(function_prototype->function_body, prefix, "return 0;");
+	output_c += prefix + doValueType(function_prototype->returnType->val_type) + " " + currentNode->name + "()\n";
+	do_node(function_prototype->function_body, prefix, function_prototype->returnValue);
 }
 
-void CCodeGenerator::doValueNode(ASTNode* currentNode, std::string prefix, std::string ending_statement) {
+void CCodeGenerator::doValueNode(ASTNode* currentNode, std::string prefix, Value* returnStatement) {
 
 	Value* current_value_node = dynamic_cast<Value*>(currentNode);
 	//output_c += prefix + "\tValue type: " + toString(current_value_node->val_type) +"\n";
@@ -325,7 +326,7 @@ void CCodeGenerator::doValueNode(ASTNode* currentNode, std::string prefix, std::
 			break;
 
 		case Value::typ_block:
-			do_node(current_value_node->data.dat_block, prefix);
+			do_node(current_value_node->data.dat_block, prefix, returnStatement);
 			break;
 
 		case Value::typ_int:

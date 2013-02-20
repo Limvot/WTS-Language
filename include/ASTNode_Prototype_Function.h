@@ -16,12 +16,14 @@ class ASTNode_Prototype_Function : public ASTNode_Prototype
         std::vector<Value*> parameters;
         unsigned int num_parameters;
         Value* function_body;                       //Function bodies are values, which can be blocks
-        Value* return_value;						//Will set its type, but not its data, so can figure out what this thing returns
+        Value* returnType;
+        Value* returnValue;
 
         enum function_type {
         						func_normal,
         						func_builtin } func_type;	//May add stuff like inline, lambda, pure, etc
         void setBody(Value* body);
+        void setReturnValue(Value* returnValue);
     protected:
     private:
 };

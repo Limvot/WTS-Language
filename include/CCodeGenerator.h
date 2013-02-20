@@ -28,14 +28,14 @@ class CCodeGenerator : public CodeGenerator
         std::string toString(int in);
 
         void generate(AbstractSyntaxTree* tree);
-        void do_node(ASTNode* currentNode, std::string prefix = std::string(""), std::string ending_statement = std::string(""));
+        void do_node(ASTNode* currentNode, std::string prefix = std::string(""), Value* returnStatement = NULL);
         
-        void doCallNode(ASTNode* currentNode, std::string prefix, std::string ending_statement);
-        void doVariableNode(ASTNode* currentNode, std::string prefix, std::string ending_statement);
-        void doStatementNode(ASTNode* currentNode, std::string prefix, std::string ending_statement);
-        void doBlockNode(ASTNode* currentNode, std::string prefix, std::string ending_statement);
-        void doPrototypeFunctionNode(ASTNode* currentNode, std::string prefix, std::string ending_statement);
-        void doValueNode(ASTNode* currentNode, std::string prefix, std::string ending_statement);
+        void doCallNode(ASTNode* currentNode, std::string prefix);
+        void doVariableNode(ASTNode* currentNode, std::string prefix);
+        void doStatementNode(ASTNode* currentNode, std::string prefix);
+        void doBlockNode(ASTNode* currentNode, std::string prefix, Value* returnStatement);
+        void doPrototypeFunctionNode(ASTNode* currentNode, std::string prefix);
+        void doValueNode(ASTNode* currentNode, std::string prefix, Value* returnStatement);
 
         std::string getOutput();
 

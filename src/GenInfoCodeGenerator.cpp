@@ -140,7 +140,7 @@ void GenInfoCodeGenerator::doPrototypeFunctionNode(ASTNode* currentNode, std::st
 	output_info += prefix + "Function prototype: " + currentNode->name + "\n";
 	ASTNode_Prototype_Function* function_prototype = static_cast<ASTNode_Prototype_Function*> (currentNode);
 	do_node(function_prototype->function_body);																//Do the body
-	output_info += prefix + "\tFunction returns a type:" + toString(function_prototype->return_value->val_type) + "\n";
+	output_info += prefix + "\tFunction returns a type:" + toString(function_prototype->returnType->val_type) + "\n";
 }
 
 void GenInfoCodeGenerator::doValueNode(ASTNode* currentNode, std::string prefix)

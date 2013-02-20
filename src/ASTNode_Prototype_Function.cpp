@@ -12,17 +12,27 @@ ASTNode_Prototype_Function::ASTNode_Prototype_Function()
     function_body->data.dat_block->setParent(function_body);
     function_body->val_type = Value::typ_block;
     
-    return_value = new Value;
-    return_value->setParent(this);
-    return_value->val_type = Value::typ_void;
+    returnType = new Value;
+    returnType->setParent(this);
+    returnType->val_type = Value::typ_void;
+
+    returnValue = NULL;
 }
 
 ASTNode_Prototype_Function::~ASTNode_Prototype_Function()
 {
-    delete return_value;
+    delete returnType;
+    delete returnValue;
+    delete function_body;
 }
 
 void ASTNode_Prototype_Function::setBody(Value* body) {
     function_body = body;
     body->setParent(this);
 }
+
+void ASTNode_Prototype_Function::setReturnValue(Value* returnValue) {
+    this->returnValue = returnValue;
+    this->returnValue->setParent(this);
+}
+

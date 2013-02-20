@@ -38,14 +38,15 @@ class WTS_Parser
         StringReader reader;
         std::string next_token;
 
-        Value* wts_begin_function(std::string token);
-        Value* wts_begin_block(std::string token);
-        Value* wts_end_block(std::string token);
+        Value* wts_function_begin(std::string token);
+        Value* wts_function_return(std::string token);
+        Value* wts_block_begin(std::string token);
+        Value* wts_block_end(std::string token);
         Value* wts_go_function(std::string token);
         Value* wts_variable(std::string token);
         Value* wts_end_statement(std::string token);
-        Value* wts_binary_operator(std::string token);
-        Value* wts_unary_operator(std::string token);
+        Value* wts_operator_binary(std::string token);
+        Value* wts_operator_unary(std::string token);
         Value* wts_begin_if(std::string token);
         Value* wts_begin_while(std::string token);
 

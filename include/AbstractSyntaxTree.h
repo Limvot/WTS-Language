@@ -23,6 +23,7 @@ class AbstractSyntaxTree
         ~AbstractSyntaxTree();
 
         bool ascend();
+        ASTNode* findAbove(ASTNode::ASTType searchNodeType);
         bool ascendToUpperBlock();
         bool setCurrentNode(ASTNode* setNode);
 

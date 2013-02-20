@@ -35,10 +35,10 @@ int WTS_Parser::parse()
             //Ignore comments
 
         } else {
-            Value* return_value = doToken(reader.truncateEnd(current_word));            //Evaluate the token, which is the word without the ending char
-            if (return_value)
+            Value* returnType = doToken(reader.truncateEnd(current_word));            //Evaluate the token, which is the word without the ending char
+            if (returnType)
             {
-                tree.currentNode->addChild(return_value);
+                tree.currentNode->addChild(returnType);
                 std::cout << "Value did exist, adding value to currentNode!\n";
             } else {
                 std::cout << "Value in top loop did not exist. (Token probally did not transfer into a value)\n";
@@ -86,13 +86,13 @@ Value* WTS_Parser::doToken(std::string token)
 }
 
 
-Value* WTS_Parser::wts_begin_function(std::string token)
+Value* WTS_Parser::wts_function_begin(std::string token)
 {
     std::string return_type = reader.word();
     std::string function_name = reader.word();
 
     ASTNode_Prototype_Function* new_function = new ASTNode_Prototype_Function;      //Create a new function
-    new_function->return_value->val_type = getValueType(return_type);
+    new_function->returnType->val_type = getValueType(return_type);
     new_function->name = function_name;                                             //Name the function the supplied name
     tree.functions[function_name] = new_function;                                   //Add the function to our function map, with the name as the key
     tree.currentNode->addChild(new_function);                                       //Add the new function node to the current node
@@ -102,7 +102,19 @@ Value* WTS_Parser::wts_begin_function(std::string token)
     return(NULL);
 }
 
-Value* WTS_Parser::wts_begin_block(std::string token)
+//This language assumes that return is always the last statement in the function.
+Value* WTS_Parser::wts_function_return(std::string token)
+{
+    ASTNode_Prototype_Function* parentFunction = static_cast<ASTNode_Prototype_Function*>(tree.findAbove(ASTNode::prototype_function));
+    if (parentFunction)
+        parentFunction->setReturnValue(doToken(reader.word()));
+    else
+        throw new SyntaxErrorException;
+
+    return(NULL);
+}
+
+Value* WTS_Parser::wts_block_begin(std::string token)
 {
     Block* newBlock = new Block();
     Value* valueParentBlock = new Value(newBlock);
@@ -112,7 +124,7 @@ Value* WTS_Parser::wts_begin_block(std::string token)
     return(valueParentBlock);
 }
 
-Value* WTS_Parser::wts_end_block(std::string token)
+Value* WTS_Parser::wts_block_end(std::string token)
 {
     std::cout << tree.currentNode->getLineage()<<std::endl;
     std::cout << ((tree.ascendToUpperBlock()) ? "ascension worked" : "ascension failed\n") << std::endl;
@@ -131,7 +143,7 @@ Value* WTS_Parser::wts_go_function(std::string call_name)
         throw new SyntaxErrorException;
     tree.currentNode->addChild(new_call);
 
-    return(NULL);
+    return(new Value(new_call));
 }
 
 Value* WTS_Parser::wts_variable(std::string token)
@@ -154,12 +166,12 @@ Value* WTS_Parser::wts_end_statement(std::string token)
     //No representation for an end of statement in the AST. If the final language uses end_statements, it will be in the upper parts of the parser
 }
 
-Value* WTS_Parser::wts_binary_operator(std::string token)
+Value* WTS_Parser::wts_operator_binary(std::string token)
 {
     Value* param1 = doToken(reader.word());
     Value* param2 = doToken(reader.word());    //Will be the correct token because the doToken for param1 will keep getting tokens until done
 
-    std::cout << "wts_binary_operator: " << token << "\n";
+    std::cout << "wts_operator_binary: " << token << "\n";
 
     std::string call_name = token;
     ASTNode_Call* new_call = new ASTNode_Call;
@@ -170,18 +182,18 @@ Value* WTS_Parser::wts_binary_operator(std::string token)
 
     new_call->parameters.push_back(param1);
     new_call->parameters.push_back(param2);
-    Value* return_value = new Value();
-    return_value->val_type = Value::typ_call;
-    return_value->data.dat_call = new_call;
-    std::cout << "This is the value of the wts_binary_operator: " << return_value << "\n";
-    return(return_value);    
+    Value* returnType = new Value();
+    returnType->val_type = Value::typ_call;
+    returnType->data.dat_call = new_call;
+    std::cout << "This is the value of the wts_operator_binary: " << returnType << "\n";
+    return(returnType);    
 }
 
-Value* WTS_Parser::wts_unary_operator(std::string token)
+Value* WTS_Parser::wts_operator_unary(std::string token)
 {
     Value* param1 = doToken(reader.word());
 
-    std::cout << "wts_unary_operator: " << token << "\n";
+    std::cout << "wts_operator_unary: " << token << "\n";
 
     std::string call_name = token;
     ASTNode_Call* new_call = new ASTNode_Call;
@@ -191,11 +203,11 @@ Value* WTS_Parser::wts_unary_operator(std::string token)
         throw new SyntaxErrorException;
 
     new_call->parameters.push_back(param1);
-    Value* return_value = new Value();
-    return_value->val_type = Value::typ_call;
-    return_value->data.dat_call = new_call;
-    std::cout << "This is the value of the wts_unary_operator: " << return_value << "\n";
-    return(return_value);    
+    Value* returnType = new Value();
+    returnType->val_type = Value::typ_call;
+    returnType->data.dat_call = new_call;
+    std::cout << "This is the value of the wts_operator_unary: " << returnType << "\n";
+    return(returnType);    
 }
 
 Value* WTS_Parser::wts_begin_if(std::string token)
@@ -249,30 +261,31 @@ Value* WTS_Parser::wts_begin_while(std::string token)
 
 void WTS_Parser::initializeMap()
 {
-    wts_KeyWordsMap["def"] = &WTS_Parser::wts_begin_function;
-    wts_KeyWordsMap["{"] = &WTS_Parser::wts_begin_block;
-    wts_KeyWordsMap["}"] = &WTS_Parser::wts_end_block;
-    wts_KeyWordsMap["print"] = &WTS_Parser::wts_unary_operator;
+    wts_KeyWordsMap["def"] = &WTS_Parser::wts_function_begin;
+    wts_KeyWordsMap["return"] = &WTS_Parser::wts_function_return;
+    wts_KeyWordsMap["{"] = &WTS_Parser::wts_block_begin;
+    wts_KeyWordsMap["}"] = &WTS_Parser::wts_block_end;
+    wts_KeyWordsMap["print"] = &WTS_Parser::wts_operator_unary;
     wts_KeyWordsMap["int"] = &WTS_Parser::wts_variable;
     wts_KeyWordsMap["uint"] = &WTS_Parser::wts_variable;
     wts_KeyWordsMap["float"] = &WTS_Parser::wts_variable;
     wts_KeyWordsMap["bool"] = &WTS_Parser::wts_variable;
     wts_KeyWordsMap[";"] = &WTS_Parser::wts_end_statement;
-    wts_KeyWordsMap["="] = &WTS_Parser::wts_binary_operator;
-    wts_KeyWordsMap["+"] = &WTS_Parser::wts_binary_operator;
-    wts_KeyWordsMap["-"] = &WTS_Parser::wts_binary_operator;
-    wts_KeyWordsMap["*"] = &WTS_Parser::wts_binary_operator;
-    wts_KeyWordsMap["/"] = &WTS_Parser::wts_binary_operator;
-    wts_KeyWordsMap["%"] = &WTS_Parser::wts_binary_operator;
-    wts_KeyWordsMap["^"] = &WTS_Parser::wts_binary_operator;
+    wts_KeyWordsMap["="] = &WTS_Parser::wts_operator_binary;
+    wts_KeyWordsMap["+"] = &WTS_Parser::wts_operator_binary;
+    wts_KeyWordsMap["-"] = &WTS_Parser::wts_operator_binary;
+    wts_KeyWordsMap["*"] = &WTS_Parser::wts_operator_binary;
+    wts_KeyWordsMap["/"] = &WTS_Parser::wts_operator_binary;
+    wts_KeyWordsMap["%"] = &WTS_Parser::wts_operator_binary;
+    wts_KeyWordsMap["^"] = &WTS_Parser::wts_operator_binary;
     wts_KeyWordsMap["if"] = &WTS_Parser::wts_begin_if;
     wts_KeyWordsMap["while"] = &WTS_Parser::wts_begin_while;
-    wts_KeyWordsMap["=="] = &WTS_Parser::wts_binary_operator;
-    wts_KeyWordsMap["!="] = &WTS_Parser::wts_binary_operator;
-    wts_KeyWordsMap[">"] = &WTS_Parser::wts_binary_operator;
-    wts_KeyWordsMap["<"] = &WTS_Parser::wts_binary_operator;
-    wts_KeyWordsMap[">="] = &WTS_Parser::wts_binary_operator;
-    wts_KeyWordsMap["<="] = &WTS_Parser::wts_binary_operator;
+    wts_KeyWordsMap["=="] = &WTS_Parser::wts_operator_binary;
+    wts_KeyWordsMap["!="] = &WTS_Parser::wts_operator_binary;
+    wts_KeyWordsMap[">"] = &WTS_Parser::wts_operator_binary;
+    wts_KeyWordsMap["<"] = &WTS_Parser::wts_operator_binary;
+    wts_KeyWordsMap[">="] = &WTS_Parser::wts_operator_binary;
+    wts_KeyWordsMap["<="] = &WTS_Parser::wts_operator_binary;
 
     std::cout << "wts_KeyWordMap initilized, now contains " << wts_KeyWordsMap.size() << " entries.\n";
 }

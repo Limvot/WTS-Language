@@ -5,32 +5,37 @@
 #another line
 def int print_hello_func
 {
-	print 4 ;
+	print 4
+}
+
+def int returnLifeSecret
+{
+	return 424242
 }
 
 def int math_func
 {
-	int a ;
-	= a 2 ;
-	= a + a * a 2 ;
+	int a
+	= a 2
+	= a + a * a 2
 
 	while < a 10
 	{
-		= a + a 1 ;
+		= a + a 1
 
 		if == a 4
 		{
-			print 4 ;
+			print 4
 		}
 
 		if != a 10
 		{
-			print 4 ;
+			print 4
 		}
 
-		print 4 ;
-		print a ;
-		print 4 ;
+		print 4
+		print a
+		print 4
 
 	}
 
@@ -38,25 +43,25 @@ def int math_func
 
 def int fib
 {
-	int a ;
-	int b ;
-	int c ;
-	= a 1 ;
-	= b 1 ;
-	= c 1 ;
+	int a
+	int b
+	int c
+	= a 1
+	= b 1
+	= c 1
 
-	print 4483 ;
-	print a ;
+	print 4483
+	print a
 
 	while < a 100
 	{
-		print a ;
-		= c a ;
-		= a + a b ;
-		= b c ;
+		print a
+		= c a
+		= a + a b
+		= b c
 	}
 
-	print a ;
+	print a
 
 }
 
@@ -64,36 +69,44 @@ def int fib
 #Sieve
 def int sieve
 {
-	int number ;
-	= number 31 ;
-	int is_prime ;
-	= is_prime 1 ;
-	int current_num ;
-	= current_num 2 ;
+	int number
+	= number 31
+	int is_prime
+	= is_prime 1
+	int current_num
+	= current_num 2
 
 	while < current_num number
 	{
 		if == % number current_num 0
 		{
-			= is_prime 0 ;
+			= is_prime 0
 		}
-		= current_num + current_num 1 ;
+		= current_num + current_num 1
 
 	}
 
-	print is_prime ;
+	print is_prime
 }
 
 
 #Main Function, entrence point of program
 def int main
 {
-	print_hello_func ;
-	math_func ;
-	sieve ;
-	fib ;
-	print 42 ;
-	print 43 ;
+	#print_hello_func
+	#math_func
+	#sieve
+	#fib
+
+	print 234
+	
+	int test
+	= test returnLifeSecret
+	print test
+
+	print 234
+
+	return 0
 }
 
 

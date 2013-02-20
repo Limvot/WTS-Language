@@ -26,30 +26,30 @@ bool AbstractSyntaxTree::ascend() {
 	
 }
 
-bool AbstractSyntaxTree::ascendToUpperBlock() {		//This class does not use the ascend() function because it only should change currentNode if there is indeed a block above it, i.e. after we've found it
+ASTNode* AbstractSyntaxTree::findAbove(ASTNode::ASTType searchNodeType) {
 
 	ASTNode* currentSearchNode = NULL;
 
 	if (currentNode->hasParent())
 		currentSearchNode = currentNode->parent;
 	else
-		return(false);
+		return(NULL);
 
-	std::cout << "Current search node had parent" << std::endl;
-
-	while (currentSearchNode->hasParent() && currentSearchNode->type != ASTNode::block) {
+	while (currentSearchNode->hasParent() && currentSearchNode->type != searchNodeType)
 		currentSearchNode = currentSearchNode->parent;
-		std::cout << "while condition true, going up a level" << std::endl;
-	}
 
-	if (currentSearchNode->type == ASTNode::block) {
-		currentNode = currentSearchNode;
-		std::cout << "found block node, suceeded!" << std::endl;
+	if (currentSearchNode->type == searchNodeType)
+		return(currentSearchNode);
+
+	return(NULL);
+}
+
+bool AbstractSyntaxTree::ascendToUpperBlock() {		//This class does not use the ascend() function because it only should change currentNode if there is indeed a block above it, i.e. after we've found it
+	ASTNode* searchNode = findAbove(ASTNode::block);
+	if (searchNode) {
+		currentNode = searchNode;
 		return(true);
 	}
-
-	std::cout << "top node not block, failed" << std::endl;
-
 	return(false);
 }
 bool AbstractSyntaxTree::setCurrentNode(ASTNode* setNode) {
