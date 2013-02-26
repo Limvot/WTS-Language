@@ -79,6 +79,13 @@ Value::Value(ASTNode_Variable* in_variable)
     data.dat_variable = in_variable;
 }
 
+Value::Value(ASTNode_Prototype* in_prototype) {
+    type = value;
+    name = "value_prototype";
+    val_type = typ_prototype;
+    data.dat_prototype = in_prototype;
+}
+
 Value::Value(ASTNode_Call* in_call)
 {
     type = value;
@@ -119,6 +126,14 @@ Value::~Value()
 			//if (data.dat_void_ptr != NULL)
 				//BAD BAD BAD;
 			break;
+
+        case typ_prototype:
+            if (data.dat_prototype != NULL)
+            {
+                delete data.dat_prototype;
+                data.dat_prototype = NULL;
+            }
+            break;
 
 		case typ_call:
 			if (data.dat_call != NULL)

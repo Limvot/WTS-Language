@@ -31,14 +31,14 @@ int WTS_Parser::parse()
             reached_end = true;
         } else if (current_word[0] == '#' || current_word[0] == '/' && current_word[1] == '/')                          //If comment
         {
-            //reader.line(); //Get rid of rest of line. Doesn't work b/c eats next line 
+            //reader.line(); //Get rid of rest of line. Doesn't work b/c eats next line if one word comment
             //Ignore comments
 
         } else {
             Value* returnType = doToken(reader.truncateEnd(current_word));            //Evaluate the token, which is the word without the ending char
             if (returnType)
             {
-                tree.currentNode->addChild(returnType);
+                tree.root->addChild(returnType);
                 std::cout << "Value did exist, adding value to currentNode!\n";
             } else {
                 std::cout << "Value in top loop did not exist. (Token probally did not transfer into a value)\n";
@@ -79,7 +79,8 @@ Value* WTS_Parser::doToken(std::string token)
             return number_value;
         }
         delete number_value;                                        //If not, delete and clean up
-        std::cout << "Unknown token: " << token << "\n";
+        std::cout << "Unknown token: ||" << token << "||\n";
+        std::cout << tree.currentNode->getLineage() << std::endl;
         //throw new SyntaxErrorException;
         return NULL;
     }
@@ -95,19 +96,21 @@ Value* WTS_Parser::wts_function_begin(std::string token)
     new_function->returnType->val_type = getValueType(return_type);
     new_function->name = function_name;                                             //Name the function the supplied name
     tree.functions[function_name] = new_function;                                   //Add the function to our function map, with the name as the key
-    tree.currentNode->addChild(new_function);                                       //Add the new function node to the current node
-    //std::cout << new_function << std::endl;
+    tree.setCurrentNode(new_function);                                       //Add the new function node to the current node
     new_function->setBody(doToken(reader.word()));
 
-    return(NULL);
+    return(new Value(static_cast<ASTNode_Prototype*>(new_function)));
 }
 
 //This language assumes that return is always the last statement in the function.
 Value* WTS_Parser::wts_function_return(std::string token)
 {
     ASTNode_Prototype_Function* parentFunction = static_cast<ASTNode_Prototype_Function*>(tree.findAbove(ASTNode::prototype_function));
-    if (parentFunction)
-        parentFunction->setReturnValue(doToken(reader.word()));
+    if (parentFunction) {
+        std::string returnString = reader.word();
+        std::cout << "returns " << returnString << std::endl;
+        parentFunction->setReturnValue(doToken(returnString));
+    }
     else
         throw new SyntaxErrorException;
 
@@ -119,18 +122,32 @@ Value* WTS_Parser::wts_block_begin(std::string token)
     Block* newBlock = new Block();
     Value* valueParentBlock = new Value(newBlock);
     newBlock->setParent(valueParentBlock);
+    valueParentBlock->setParent(tree.currentNode);
+    ASTNode* toRestoreCurrentNode = tree.currentNode;
     tree.setCurrentNode(static_cast<ASTNode*>(newBlock));
 
-    return(valueParentBlock);
-}
+    bool reachedEnd = false;
+    while (!reachedEnd)
+    {
+        std::string current_word = reader.word(false);                          //Do not truncate ending char
+        std::cout << "Current WORD/LINE =||" << current_word << "||end of word\n";
+        if (current_word == "" || current_word[0] == '}')                                     //Reached end-of-file
+        {
+            reachedEnd = true;
+        } else if (current_word[0] == '#' || current_word[0] == '/' && current_word[1] == '/')                          //If comment
+        {
+            //reader.line(); //Get rid of rest of line. Doesn't work b/c eats next line if one word comment
+            //Ignore comments
 
-Value* WTS_Parser::wts_block_end(std::string token)
-{
-    std::cout << tree.currentNode->getLineage()<<std::endl;
-    std::cout << ((tree.ascendToUpperBlock()) ? "ascension worked" : "ascension failed\n") << std::endl;
-    std::cout << "Block ended, going to block named " + tree.currentNode->name + "\n";
-    std::cout << tree.currentNode->getLineage()<<std::endl;
-    return(NULL);
+        } else {
+            Value* returnType = doToken(reader.truncateEnd(current_word));            //Evaluate the token, which is the word without the ending char
+            if (returnType)
+                newBlock->addChild(returnType);
+        }
+    }
+    reachedEnd = false;
+    tree.setCurrentNode(toRestoreCurrentNode);
+    return(valueParentBlock);
 }
 
 //This one is special, it is not called by the wts_KeyWordsMap but by doToken directly if there is a match in the function map
@@ -141,7 +158,6 @@ Value* WTS_Parser::wts_go_function(std::string call_name)
     new_call->function = tree.functions[call_name];                                 //Look up the pointer to the function prototype in the tree's functions map, and assign it to the call's function prototype pointer
     if (new_call->function == 0)                                                    //Throw an exception if we don't find it. This should be expanded later.
         throw new SyntaxErrorException;
-    tree.currentNode->addChild(new_call);
 
     return(new Value(new_call));
 }
@@ -154,9 +170,8 @@ Value* WTS_Parser::wts_variable(std::string token)
     new_variable->name = variable_name;
     new_variable->value->val_type = getValueType(token);
     tree.variables[variable_name] = new_variable;
-    tree.currentNode->addChild(new_variable);
 
-    return(NULL);
+    return(new Value( new ASTNode_Prototype_Variable(new_variable)));
 
 }
 
@@ -214,7 +229,6 @@ Value* WTS_Parser::wts_begin_if(std::string token)
 {
 
     ASTNode_Statement* new_if_statement = new ASTNode_Statement;                        //Create a new statement
-    tree.currentNode->addChild(new_if_statement);                                      //Add the new statement node to the current node
     new_if_statement->statement_type = ASTNode_Statement::if_statement;
     new_if_statement->condition = doToken(reader.word());
 
@@ -222,40 +236,35 @@ Value* WTS_Parser::wts_begin_if(std::string token)
     if (new_if_statement->condition)
     {
         std::cout << "if condition exists!\n";
-        new_if_statement->condition->parent = new_if_statement;                             //Make sure we set parents correctly
+        new_if_statement->condition->setParent(new_if_statement);
     } else {
         std::cout << "if statement with no value!!\n\n\n";
         throw new SyntaxErrorException;
     }
-    new_if_statement->parent = tree.currentNode; 
     new_if_statement->first_option = doToken(reader.word());
-    new_if_statement->first_option->parent = new_if_statement;
-    return(NULL);
+    new_if_statement->first_option->setParent(new_if_statement);
+    return(new Value(new_if_statement));
 }
 
 Value* WTS_Parser::wts_begin_while(std::string token)
 {
 
-    ASTNode_Statement* new_while_statement = new ASTNode_Statement;      //Create a new statement
-    tree.currentNode->addChild(new_while_statement);                                      //Add the new statement node to the current node
+    ASTNode_Statement* new_while_statement = new ASTNode_Statement;
     new_while_statement->statement_type = ASTNode_Statement::while_statement;
     new_while_statement->condition = doToken(reader.word());
-
 
     if (new_while_statement->condition)
     {
         std::cout << "while condition exists!\n";
-        new_while_statement->condition->parent = new_while_statement;                             //Make sure we set parents correctly
+        new_while_statement->condition->setParent(new_while_statement);
     } else {
         std::cout << "while statement with no value!!\n\n\n";
         throw new SyntaxErrorException;
     }
-    new_while_statement->parent = tree.currentNode;
     new_while_statement->first_option = doToken(reader.word());
-    std::cout << new_while_statement->first_option;
-    new_while_statement->first_option->parent = new_while_statement;                         //Set current node to the new statement's first option's block
-    return(NULL);
+    new_while_statement->first_option->setParent(new_while_statement);
 
+    return(new Value(new_while_statement));
 }
 
 
@@ -264,7 +273,6 @@ void WTS_Parser::initializeMap()
     wts_KeyWordsMap["def"] = &WTS_Parser::wts_function_begin;
     wts_KeyWordsMap["return"] = &WTS_Parser::wts_function_return;
     wts_KeyWordsMap["{"] = &WTS_Parser::wts_block_begin;
-    wts_KeyWordsMap["}"] = &WTS_Parser::wts_block_end;
     wts_KeyWordsMap["print"] = &WTS_Parser::wts_operator_unary;
     wts_KeyWordsMap["int"] = &WTS_Parser::wts_variable;
     wts_KeyWordsMap["uint"] = &WTS_Parser::wts_variable;

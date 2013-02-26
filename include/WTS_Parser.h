@@ -9,6 +9,7 @@
 #include "SyntaxErrorException.h"
 #include "AbstractSyntaxTree.h"
 #include "ASTNode.h"
+#include "ASTNode_Prototype_Variable.h"
 #include "ASTNode_Prototype_Function.h"
 #include "ASTNode_Prototype_Function_Builtin.h"
 #include "ASTNode_Call.h"

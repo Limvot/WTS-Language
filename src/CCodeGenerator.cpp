@@ -14,8 +14,10 @@ CCodeGenerator::~CCodeGenerator()
 void CCodeGenerator::generate(AbstractSyntaxTree* tree)
 {
 	output_c = "#include <stdio.h>\n\n";
+	std::cout << "Root has " << tree->root->num_children << " children." << std::endl;
 	if (tree->root->num_children)
 	{
+		std::cout << "Root has " << tree->root->num_children << " children." << std::endl;
 		for (unsigned int i = 0; i < tree->root->num_children; i++)
 		{
 			do_node(tree->root->children[i]);							//Go through each child of the root node
@@ -148,6 +150,10 @@ std::string CCodeGenerator::doValueType(Value::value_type type_in)
     		return std::string("FUNCTION OBJECTS NOT IMPLEMENTED");
     		break;
 
+    	case Value:: typ_prototype:
+    		return std::string("WAIT, WHAT? PROTOTYPE VARIABLE?");
+    		break;
+
     	case Value:: typ_call:
     		return std::string("WAIT, WHAT? TYP_CALL VARIABLE?");
     		break;
@@ -165,8 +171,8 @@ void CCodeGenerator::do_node(ASTNode* currentNode, std::string prefix, Value* re
 			doCallNode(currentNode, prefix);
 			break;
 
-		case ASTNode::variable:
-			doVariableNode(currentNode, prefix);
+		case ASTNode::prototype_variable:
+			doVariablePrototypeNode(currentNode, prefix);
 			break;
 
 		case ASTNode::statement:
@@ -262,13 +268,14 @@ void CCodeGenerator::doCallNode(ASTNode* currentNode, std::string prefix)
 	}
 }
 
-void CCodeGenerator::doVariableNode(ASTNode* currentNode, std::string prefix) {
-	output_c += prefix + doValueType(static_cast<ASTNode_Variable*>(currentNode)->value->val_type) + " " + currentNode->name;
+void CCodeGenerator::doVariablePrototypeNode(ASTNode* currentNode, std::string prefix) {
+	ASTNode_Variable* variable = static_cast<ASTNode_Prototype_Variable*>(currentNode)->variable;
+	output_c += prefix + doValueType(variable->value->val_type) + " " + variable->name;
 }
 
 void CCodeGenerator::doStatementNode(ASTNode* currentNode, std::string prefix) {
 
-	ASTNode_Statement* statement_node = dynamic_cast<ASTNode_Statement*> (currentNode);
+	ASTNode_Statement* statement_node = dynamic_cast<ASTNode_Statement*>(currentNode);
 	switch (statement_node->statement_type)
 	{
 		case ASTNode_Statement::if_statement:
@@ -301,8 +308,9 @@ void CCodeGenerator::doBlockNode(ASTNode* currentNode, std::string prefix, Value
 		output_c += ";\n";
 	}
 	if (returnStatement) {
-		output_c += prefix + "return ";
+		output_c += prefix + "\t" + "return ";
 		do_node(returnStatement);
+		output_c += ";\n" + prefix + "}\n";
 	}
 	else
 		output_c += prefix + "}\n";
@@ -321,6 +329,10 @@ void CCodeGenerator::doValueNode(ASTNode* currentNode, std::string prefix, Value
 	//output_c += prefix + "\tValue type: " + toString(current_value_node->val_type) +"\n";
 	switch (current_value_node->val_type)
 	{
+		case Value::typ_prototype:
+			do_node(current_value_node->data.dat_prototype, prefix);
+			break;
+
 		case Value::typ_call:
 			do_node(current_value_node->data.dat_call, prefix);
 			break;

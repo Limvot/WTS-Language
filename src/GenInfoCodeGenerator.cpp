@@ -47,8 +47,8 @@ void GenInfoCodeGenerator::do_node(ASTNode* currentNode, std::string prefix)				
 			doCallNode(currentNode, prefix);
 			break;
 
-		case ASTNode::variable:
-			output_info += prefix + "variable:" + currentNode->name + "\n";
+		case ASTNode::prototype_variable:
+			output_info += prefix + "variable:" + static_cast<ASTNode_Prototype_Variable*>(currentNode)->variable->name + "\n";
 			break;
 
 		case ASTNode::statement:
@@ -60,7 +60,7 @@ void GenInfoCodeGenerator::do_node(ASTNode* currentNode, std::string prefix)				
 			break;
 
 		case ASTNode::prototype:
-			output_info += prefix + "Plain prototype: Again, why are we here?\n";
+			output_info += prefix + "Plain prototype\n";
 			break;
 
 		case ASTNode::prototype_function:
@@ -139,7 +139,7 @@ void GenInfoCodeGenerator::doPrototypeFunctionNode(ASTNode* currentNode, std::st
 {
 	output_info += prefix + "Function prototype: " + currentNode->name + "\n";
 	ASTNode_Prototype_Function* function_prototype = static_cast<ASTNode_Prototype_Function*> (currentNode);
-	do_node(function_prototype->function_body);																//Do the body
+	do_node(function_prototype->function_body, prefix);																//Do the body
 	output_info += prefix + "\tFunction returns a type:" + toString(function_prototype->returnType->val_type) + "\n";
 }
 
@@ -148,7 +148,11 @@ void GenInfoCodeGenerator::doValueNode(ASTNode* currentNode, std::string prefix)
 	Value* current_value_node = dynamic_cast<Value*>(currentNode);
 	output_info += prefix + "Value: This could get complicated\n";
 	output_info += prefix + "\tValue type: " + toString(current_value_node->val_type) +"\n";
-	if (current_value_node->val_type == Value::typ_call)
+	if (current_value_node->val_type == Value::typ_prototype)
+	{
+		output_info += prefix + "\tPrototype's name: " + current_value_node->data.dat_prototype->name + "\n";
+		do_node(current_value_node->data.dat_prototype, prefix+"\t");
+	} else if (current_value_node->val_type == Value::typ_call)
 	{
 		output_info += prefix + "\tFunction called's name: " + current_value_node->data.dat_call->function->name + "\n";
 		do_node(current_value_node->data.dat_call, prefix+"\t");

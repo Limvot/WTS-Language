@@ -87,10 +87,17 @@ def int sieve
 	}
 
 	print is_prime
+
+	return is_prime
 }
 
+def int otherFunc
+{
+	#lets do stuff!
 
-#Main Function, entrence point of program
+	return returnLifeSecret 
+}
+
 def int main
 {
 	#print_hello_func
@@ -101,12 +108,10 @@ def int main
 	print 234
 	
 	int test
-	= test returnLifeSecret
+	= test otherFunc
 	print test
 
 	print 234
 
-	return 0
+	return test
 }
-
-

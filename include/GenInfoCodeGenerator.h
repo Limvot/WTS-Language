@@ -9,6 +9,7 @@
 
 #include "CodeGenerator.h"
 #include "Value.h"
+#include "ASTNode_Prototype_Variable.h"
 #include "ASTNode_Prototype_Function.h"
 #include "ASTNode_Statement.h"
 

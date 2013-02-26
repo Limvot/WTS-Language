@@ -24,6 +24,7 @@ class Value : public ASTNode
         Value(double in_double);
         Value(bool in_bool);
         Value(char in_char);
+        Value(ASTNode_Prototype* in_prototype);
         Value(ASTNode_Call* in_call);
         Value(ASTNode_Variable* in_variable);
         Value(Block* in_block);
@@ -40,6 +41,7 @@ class Value : public ASTNode
                             typ_variable,
                             typ_object,
                             typ_function,
+                            typ_prototype,
                             typ_call,
                             typ_block }  val_type;
         union  {void* dat_void_ptr;
@@ -52,6 +54,7 @@ class Value : public ASTNode
                 ASTNode_Variable* dat_variable;
                 //Figure out how to add support for object instances
                 //Figure out how to add support for function pointers
+                ASTNode_Prototype* dat_prototype;
                 ASTNode_Call* dat_call;
                 Block* dat_block;} data;
 

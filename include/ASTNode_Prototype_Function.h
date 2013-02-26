@@ -2,6 +2,7 @@
 #define ASTNODE_PROTOTYPE_FUNCTION_H
 
 #include <vector>
+#include <iostream>
 
 #include <ASTNode_Prototype.h>
 #include <Value.h>

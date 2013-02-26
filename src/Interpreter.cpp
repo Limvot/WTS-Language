@@ -261,5 +261,7 @@ Value* Interpreter::doCallNode(ASTNode* currentNode)
 		//Do regular functions!
 		//std::cout <<  "Interpreting the custom function's body\n";
 		do_node(current_call_node->function->function_body);
+		if (current_call_node->function->returnValue)
+			return do_node(current_call_node->function->returnValue);
 	}
 }

@@ -33,6 +33,10 @@ void ASTNode_Prototype_Function::setBody(Value* body) {
 
 void ASTNode_Prototype_Function::setReturnValue(Value* returnValue) {
     this->returnValue = returnValue;
-    this->returnValue->setParent(this);
+
+    if (returnValue)
+        this->returnValue->setParent(this);
+    else
+        std::cout << "Return value attempted to be set for " << name << " is null." << std::endl;
 }
 

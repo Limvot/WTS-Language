@@ -32,8 +32,10 @@ ASTNode* AbstractSyntaxTree::findAbove(ASTNode::ASTType searchNodeType) {
 
 	if (currentNode->hasParent())
 		currentSearchNode = currentNode->parent;
-	else
+	else {
+		std::cout << "currentNode does not have parent" << std::endl;
 		return(NULL);
+	}
 
 	while (currentSearchNode->hasParent() && currentSearchNode->type != searchNodeType)
 		currentSearchNode = currentSearchNode->parent;
@@ -41,6 +43,7 @@ ASTNode* AbstractSyntaxTree::findAbove(ASTNode::ASTType searchNodeType) {
 	if (currentSearchNode->type == searchNodeType)
 		return(currentSearchNode);
 
+	std::cout << "Could not find above node of type " << searchNodeType << std::endl;
 	return(NULL);
 }
 

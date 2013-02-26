@@ -8,6 +8,7 @@
 #include "CodeGenerator.h"
 #include "Value.h"
 #include "ASTNode_Variable.h"
+#include "ASTNode_Prototype_Variable.h"
 #include "ASTNode_Prototype_Function.h"
 #include "ASTNode_Prototype_Function_Builtin.h"
 
@@ -31,7 +32,7 @@ class CCodeGenerator : public CodeGenerator
         void do_node(ASTNode* currentNode, std::string prefix = std::string(""), Value* returnStatement = NULL);
         
         void doCallNode(ASTNode* currentNode, std::string prefix);
-        void doVariableNode(ASTNode* currentNode, std::string prefix);
+        void doVariablePrototypeNode(ASTNode* currentNode, std::string prefix);
         void doStatementNode(ASTNode* currentNode, std::string prefix);
         void doBlockNode(ASTNode* currentNode, std::string prefix, Value* returnStatement);
         void doPrototypeFunctionNode(ASTNode* currentNode, std::string prefix);

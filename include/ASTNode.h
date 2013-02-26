@@ -40,6 +40,7 @@ class ASTNode
                             prototype,
                             prototype_function,
                             prototype_object,
+                            prototype_variable,
                             value,
                             basic
                             } type;

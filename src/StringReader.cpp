@@ -57,7 +57,9 @@ std::string StringReader::getTokens(std::vector<std::string> stop_chars, bool tr
     {
         new_found_pos = rd_string.find(stop_chars[i], str_pos);
         
-        if ((new_found_pos <= found_pos) & (new_found_pos != std::string::npos))
+        //Ok, if the position we found is closer than what we have and is not the end of file, OR the position we are at is the end of file
+        //assign the new found position to the currrent found position
+        if ( ((new_found_pos <= found_pos) && (new_found_pos != std::string::npos)) || found_pos == std::string::npos )
         {
             found_pos = new_found_pos;
             stop_char = stop_chars[i];
@@ -68,9 +70,7 @@ std::string StringReader::getTokens(std::vector<std::string> stop_chars, bool tr
     {
         str_pos++;
         return stop_char;
-    }
-
-    if (found_pos == std::string::npos)                         //We are at the end of the file
+    } else if (found_pos == std::string::npos)                         //We are at the end of the file
     {
         //End of String
         end_reached = true;
