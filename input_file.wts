@@ -13,6 +13,16 @@ def int returnLifeSecret
 	return 424242
 }
 
+def int returnInput int input
+{
+	return input
+}
+
+def int addNumbers int a int b
+{
+	return + a b
+}
+
 def int math_func
 {
 	int a
@@ -110,6 +120,15 @@ def int main
 	int test
 	= test otherFunc
 	print test
+
+	print otherFunc
+
+	int testReturnInput
+	= testReturnInput returnInput 1337
+
+	print testReturnInput
+
+	print addNumbers 3 7
 
 	print 234
 

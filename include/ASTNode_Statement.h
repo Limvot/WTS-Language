@@ -13,10 +13,10 @@ class ASTNode_Statement : public ASTNode
         enum state_type	{	if_statement,
         					while_statement,
         					for_statement,
-        					do_while_statement} statement_type;
+        					do_while_statement} statementType;
         Value* condition;
-        Value* first_option;    //Values can be blocks
-        Value* second_option;
+        Value* firstOption;    //Values can be blocks
+        Value* secondOption;
     protected:
     private:
 };

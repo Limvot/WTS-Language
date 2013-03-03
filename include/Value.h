@@ -17,49 +17,49 @@ class Value : public ASTNode
     public:
         Value();
         Value(ASTNode*);
-        Value(void* in_void_ptr);
-        Value(int in_int);
-        Value(unsigned int in_uint);
-        Value(float in_float);
-        Value(double in_double);
-        Value(bool in_bool);
-        Value(char in_char);
-        Value(ASTNode_Prototype* in_prototype);
-        Value(ASTNode_Call* in_call);
-        Value(ASTNode_Variable* in_variable);
-        Value(Block* in_block);
+        Value(void* inVoidPtr);
+        Value(int inInt);
+        Value(unsigned int inUInt);
+        Value(float inFloat);
+        Value(double inDouble);
+        Value(bool inBool);
+        Value(char inChar);
+        Value(ASTNode_Prototype* inPrototype);
+        Value(ASTNode_Call* inCall);
+        Value(ASTNode_Variable* inVariable);
+        Value(Block* inBlock);
 
         virtual ~Value();
         
-        enum value_type {   typ_void,
-                            typ_int,
-                            typ_uint,
-                            typ_float,
-                            typ_double,
-                            typ_bool,
-                            typ_char,
-                            typ_variable,
-                            typ_object,
-                            typ_function,
-                            typ_prototype,
-                            typ_call,
-                            typ_block }  val_type;
-        union  {void* dat_void_ptr;
-                int   dat_int;
-                unsigned int dat_uint;
-                float dat_float;
-                double dat_double;
-                bool  dat_bool;
-                char dat_char;
-                ASTNode_Variable* dat_variable;
+        enum value_type {   typVoid,
+                            typInt,
+                            typUInt,
+                            typFloat,
+                            typDouble,
+                            typBool,
+                            typChar,
+                            typVariable,
+                            typObject,
+                            typFunction,
+                            typPrototype,
+                            typCall,
+                            typBlock }  valType;
+        union  {void* datVoidPtr;
+                int   datInt;
+                unsigned int datUInt;
+                float datFloat;
+                double datDouble;
+                bool  datBool;
+                char datChar;
+                ASTNode_Variable* datVariable;
                 //Figure out how to add support for object instances
                 //Figure out how to add support for function pointers
-                ASTNode_Prototype* dat_prototype;
-                ASTNode_Call* dat_call;
-                Block* dat_block;} data;
+                ASTNode_Prototype* datPrototype;
+                ASTNode_Call* datCall;
+                Block* datBlock;} data;
 
-        value_type isNumber(std::string input_string);
-        bool makeNumber(std::string input_string);
+        value_type isNumber(std::string inputString);
+        bool makeNumber(std::string inputString);
 
     protected:
     private:

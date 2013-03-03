@@ -5,16 +5,16 @@ ASTNode_Statement::ASTNode_Statement()
     type = statement;
     name = "statement";
     condition = NULL;
-    first_option = NULL;
-    second_option = NULL;
+    firstOption = NULL;
+    secondOption = NULL;
 }
 
 ASTNode_Statement::~ASTNode_Statement()
 {
     if (condition)
     	delete condition;
-    if (first_option)
+    if (firstOption)
     	delete condition;
-    if (second_option)
+    if (secondOption)
     	delete condition;
 }

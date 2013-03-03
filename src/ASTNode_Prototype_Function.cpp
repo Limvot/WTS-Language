@@ -4,17 +4,16 @@ ASTNode_Prototype_Function::ASTNode_Prototype_Function()
 {
     type = prototype_function;
     name = "prototype_function";
-    num_parameters = 0;
-    func_type = func_normal;
+    funcType = func_normal;
     function_body = new Value();
     function_body->setParent(this);
-    function_body->data.dat_block = new Block(function_body);
-    function_body->data.dat_block->setParent(function_body);
-    function_body->val_type = Value::typ_block;
+    function_body->data.datBlock = new Block(function_body);
+    function_body->data.datBlock->setParent(function_body);
+    function_body->valType = Value::typBlock;
     
     returnType = new Value;
     returnType->setParent(this);
-    returnType->val_type = Value::typ_void;
+    returnType->valType = Value::typVoid;
 
     returnValue = NULL;
 }

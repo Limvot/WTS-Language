@@ -6,9 +6,9 @@ Block::Block()
     name = "block";
 }
 
-Block::Block(ASTNode* incoming_parent)
+Block::Block(ASTNode* incomingParent)
 {
-	setParent(incoming_parent);
+	setParent(incomingParent);
     type = block;
     name = "block";
 }

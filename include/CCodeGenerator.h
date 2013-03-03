@@ -29,7 +29,7 @@ class CCodeGenerator : public CodeGenerator
         std::string toString(int in);
 
         void generate(AbstractSyntaxTree* tree);
-        void do_node(ASTNode* currentNode, std::string prefix = std::string(""), Value* returnStatement = NULL);
+        void doNode(ASTNode* currentNode, std::string prefix = std::string(""), Value* returnStatement = NULL);
         
         void doCallNode(ASTNode* currentNode, std::string prefix);
         void doVariablePrototypeNode(ASTNode* currentNode, std::string prefix);

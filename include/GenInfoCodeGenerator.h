@@ -28,7 +28,7 @@ class GenInfoCodeGenerator : public CodeGenerator
         std::string toString(int in);
 
         void generate(AbstractSyntaxTree* tree);
-        void do_node(ASTNode* currentNode, std::string prefix = std::string(""));
+        void doNode(ASTNode* currentNode, std::string prefix = std::string(""));
 
         void doCallNode(ASTNode* currentNode, std::string prefix);
         void doStatementNode(ASTNode* currentNode, std::string prefix);

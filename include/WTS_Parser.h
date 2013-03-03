@@ -22,7 +22,7 @@ class WTS_Parser
     public:
         WTS_Parser();
         virtual ~WTS_Parser();
-        int setString(std::string input_string);
+        int setString(std::string inputString);
         int parse();
         AbstractSyntaxTree* getTree();
         Value* doToken(std::string token);
@@ -35,7 +35,7 @@ class WTS_Parser
         AbstractSyntaxTree tree;
 
     protected:
-        bool reached_end;
+        bool reachedEnd;
         StringReader reader;
         std::string next_token;
 

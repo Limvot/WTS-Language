@@ -20,7 +20,7 @@ void CCodeGenerator::generate(AbstractSyntaxTree* tree)
 		std::cout << "Root has " << tree->root->num_children << " children." << std::endl;
 		for (unsigned int i = 0; i < tree->root->num_children; i++)
 		{
-			do_node(tree->root->children[i]);							//Go through each child of the root node
+			doNode(tree->root->children[i]);							//Go through each child of the root node
 		}
 	}
 }
@@ -110,52 +110,52 @@ std::string CCodeGenerator::doValueType(Value::value_type type_in)
 {
 	    switch (type_in)
     {
-    	case Value:: typ_void:
+    	case Value:: typVoid:
     		return std::string("void");
     		break;
 
-    	case Value:: typ_int:
+    	case Value:: typInt:
     		return std::string("int");
     		break;
 
-    	case Value:: typ_uint:
+    	case Value:: typUInt:
     		return std::string("unsigned int");
     		break;
 
-    	case Value:: typ_float:
+    	case Value:: typFloat:
     		return std::string("float");
     		break;
 
-    	case Value:: typ_double:
+    	case Value:: typDouble:
     		return std::string("double");
     		break;
 
-    	case Value:: typ_bool:
+    	case Value:: typBool:
     		return std::string("bool");
     		break;
 
-    	case Value:: typ_char:
+    	case Value:: typChar:
     		return std::string("char");
     		break;
 
-    	case Value:: typ_variable:
+    	case Value:: typVariable:
     		return std::string("WAIT, WHAT? VARIABLE VARIABLE?");
     		break;
 
-    	case Value:: typ_object:
+    	case Value:: typObject:
     		return std::string("OBJECT TYPE NOT IMPLEMENTED");
     		break;
 
-    	case Value:: typ_function:
+    	case Value:: typFunction:
     		return std::string("FUNCTION OBJECTS NOT IMPLEMENTED");
     		break;
 
-    	case Value:: typ_prototype:
+    	case Value:: typPrototype:
     		return std::string("WAIT, WHAT? PROTOTYPE VARIABLE?");
     		break;
 
-    	case Value:: typ_call:
-    		return std::string("WAIT, WHAT? TYP_CALL VARIABLE?");
+    	case Value:: typCall:
+    		return std::string("WAIT, WHAT? typCall VARIABLE?");
     		break;
 
     	default:
@@ -163,7 +163,7 @@ std::string CCodeGenerator::doValueType(Value::value_type type_in)
     }
 }
 
-void CCodeGenerator::do_node(ASTNode* currentNode, std::string prefix, Value* returnStatement)				//The prefix is added to each line added to the output, so that we can have multiple indents through recursive functions
+void CCodeGenerator::doNode(ASTNode* currentNode, std::string prefix, Value* returnStatement)				//The prefix is added to each line added to the output, so that we can have multiple indents through recursive functions
 {
 	switch (currentNode->type)
 	{
@@ -207,43 +207,43 @@ void CCodeGenerator::do_node(ASTNode* currentNode, std::string prefix, Value* re
 
 void CCodeGenerator::doCallNode(ASTNode* currentNode, std::string prefix)
 {
-	ASTNode_Call* current_call_node = static_cast<ASTNode_Call*>(currentNode);
-	if (current_call_node->function->func_type == ASTNode_Prototype_Function::func_builtin)
+	ASTNode_Call* currentCallNode = static_cast<ASTNode_Call*>(currentNode);
+	if (currentCallNode->function->funcType == ASTNode_Prototype_Function::func_builtin)
 	{
-		ASTNode_Prototype_Function_Builtin* current_builtin_function = static_cast<ASTNode_Prototype_Function_Builtin*>(current_call_node->function);
-		if (current_builtin_function->is_binary)																//Binary operator
+		ASTNode_Prototype_Function_Builtin* currentBuiltinFunction = static_cast<ASTNode_Prototype_Function_Builtin*>(currentCallNode->function);
+		if (currentBuiltinFunction->isBinary)																//Binary operator
 		{
-			if (current_builtin_function->operator_type != ASTNode_Prototype_Function_Builtin::assignment)
+			if (currentBuiltinFunction->operatorType != ASTNode_Prototype_Function_Builtin::assignment)
 				output_c += "( ";
 			else
 				output_c += prefix;																				//Assignment, so use the prefix
 			//First Param
-			Value* current_value_node = current_call_node->parameters[0];
-			if (current_value_node)
-				do_node(current_value_node, "");
+			Value* currentValueNode = currentCallNode->parameters[0];
+			if (currentValueNode)
+				doNode(currentValueNode, "");
 			else
 				output_c += prefix + "NULL";
 
-			output_c += " " + doOperatorSymbol(current_builtin_function->operator_type) + " ";
+			output_c += " " + doOperatorSymbol(currentBuiltinFunction->operatorType) + " ";
 
 			//Second Param
-			current_value_node = current_call_node->parameters[1];
-			if (current_value_node)
-				do_node(current_value_node, "");
+			currentValueNode = currentCallNode->parameters[1];
+			if (currentValueNode)
+				doNode(currentValueNode, "");
 			else
 				output_c += prefix + "NULL";
 
-			if (current_builtin_function->operator_type != ASTNode_Prototype_Function_Builtin::assignment)
+			if (currentBuiltinFunction->operatorType != ASTNode_Prototype_Function_Builtin::assignment)
 				output_c += ")";
 
 		} else {																								//Unary operator!
 
-			output_c += prefix + doOperatorSymbol(current_builtin_function->operator_type) + "( ";
+			output_c += prefix + doOperatorSymbol(currentBuiltinFunction->operatorType) + "( ";
 
 			//Only param
-			Value* current_value_node = current_call_node->parameters[0];
-			if (current_value_node)
-				do_node(current_value_node, "");
+			Value* currentValueNode = currentCallNode->parameters[0];
+			if (currentValueNode)
+				doNode(currentValueNode, "");
 			else
 				output_c += prefix + "NULL";
 
@@ -252,17 +252,20 @@ void CCodeGenerator::doCallNode(ASTNode* currentNode, std::string prefix)
 
 	} else {																									//If not a built in function, i.e. a regular one
 
-		output_c += prefix + current_call_node->function->name + "(";
-		for (unsigned int i = 0; i < current_call_node->parameters.size(); i++)
+		output_c += prefix + currentCallNode->function->name + "(";
+		for (unsigned int i = 0; i < currentCallNode->parameters.size(); i++)
 		{
-			Value* current_value_node = current_call_node->parameters[i];
+			Value* currentValueNode = currentCallNode->parameters[i];
 
-			if (current_value_node)
-				do_node(current_value_node, "");
+			if (currentValueNode)
+				doNode(currentValueNode, "");
 			else
 				output_c += prefix + "NULL";
 
-			output_c += ", ";
+			if (i < currentCallNode->parameters.size() - 1)					//If this is not the last parameter, add a comma space
+			{
+				output_c += ", ";
+			}
 		}
 		output_c += ")";
 	}
@@ -270,28 +273,28 @@ void CCodeGenerator::doCallNode(ASTNode* currentNode, std::string prefix)
 
 void CCodeGenerator::doVariablePrototypeNode(ASTNode* currentNode, std::string prefix) {
 	ASTNode_Variable* variable = static_cast<ASTNode_Prototype_Variable*>(currentNode)->variable;
-	output_c += prefix + doValueType(variable->value->val_type) + " " + variable->name;
+	output_c += prefix + doValueType(variable->value->valType) + " " + variable->name;
 }
 
 void CCodeGenerator::doStatementNode(ASTNode* currentNode, std::string prefix) {
 
-	ASTNode_Statement* statement_node = dynamic_cast<ASTNode_Statement*>(currentNode);
-	switch (statement_node->statement_type)
+	ASTNode_Statement* statementNode = dynamic_cast<ASTNode_Statement*>(currentNode);
+	switch (statementNode->statementType)
 	{
 		case ASTNode_Statement::if_statement:
 		{
 			output_c += prefix + "if ( ";
-			do_node(statement_node->condition, std::string(""));
+			doNode(statementNode->condition, std::string(""));
 			output_c += " )\n";
-			do_node(statement_node->first_option, prefix+"\t");
+			doNode(statementNode->firstOption, prefix+"\t");
 			break;
 		}
 
 		case ASTNode_Statement::while_statement:
 			output_c += prefix + "while ( ";
-			do_node(statement_node->condition, std::string(""));
+			doNode(statementNode->condition, std::string(""));
 			output_c += " )\n";
-			do_node(statement_node->first_option, prefix+"\t");
+			doNode(statementNode->firstOption, prefix+"\t");
 			break;
 
 		default:
@@ -304,12 +307,12 @@ void CCodeGenerator::doBlockNode(ASTNode* currentNode, std::string prefix, Value
 	output_c += prefix + "{\n";
 	for (unsigned int i = 0; i < currentNode->children.size(); i++)
 	{
-		do_node(currentNode->children[i], prefix+"\t");
+		doNode(currentNode->children[i], prefix+"\t");
 		output_c += ";\n";
 	}
 	if (returnStatement) {
 		output_c += prefix + "\t" + "return ";
-		do_node(returnStatement);
+		doNode(returnStatement);
 		output_c += ";\n" + prefix + "}\n";
 	}
 	else
@@ -319,34 +322,42 @@ void CCodeGenerator::doBlockNode(ASTNode* currentNode, std::string prefix, Value
 void CCodeGenerator::doPrototypeFunctionNode(ASTNode* currentNode, std::string prefix) {
 
 	ASTNode_Prototype_Function* function_prototype = static_cast<ASTNode_Prototype_Function*> (currentNode);
-	output_c += prefix + doValueType(function_prototype->returnType->val_type) + " " + currentNode->name + "()\n";
-	do_node(function_prototype->function_body, prefix, function_prototype->returnValue);
+	output_c += prefix + doValueType(function_prototype->returnType->valType) + " " + currentNode->name + "(";
+	for (int i = 0; i < function_prototype->parameters.size(); i++) {
+		doNode(function_prototype->parameters[i]);
+		if (i < function_prototype->parameters.size() - 1)					//If this is not the last parameter, add a comma space
+		{
+			output_c += ", ";
+		}
+	}
+	output_c += ")\n";
+	doNode(function_prototype->function_body, prefix, function_prototype->returnValue);
 }
 
 void CCodeGenerator::doValueNode(ASTNode* currentNode, std::string prefix, Value* returnStatement) {
 
-	Value* current_value_node = dynamic_cast<Value*>(currentNode);
-	//output_c += prefix + "\tValue type: " + toString(current_value_node->val_type) +"\n";
-	switch (current_value_node->val_type)
+	Value* currentValueNode = dynamic_cast<Value*>(currentNode);
+	//output_c += prefix + "\tValue type: " + toString(currentValueNode->valType) +"\n";
+	switch (currentValueNode->valType)
 	{
-		case Value::typ_prototype:
-			do_node(current_value_node->data.dat_prototype, prefix);
+		case Value::typPrototype:
+			doNode(currentValueNode->data.datPrototype, prefix);
 			break;
 
-		case Value::typ_call:
-			do_node(current_value_node->data.dat_call, prefix);
+		case Value::typCall:
+			doNode(currentValueNode->data.datCall, prefix);
 			break;
 
-		case Value::typ_block:
-			do_node(current_value_node->data.dat_block, prefix, returnStatement);
+		case Value::typBlock:
+			doNode(currentValueNode->data.datBlock, prefix, returnStatement);
 			break;
 
-		case Value::typ_int:
-			output_c += toString(current_value_node->data.dat_int);
+		case Value::typInt:
+			output_c += toString(currentValueNode->data.datInt);
 			break;
 
-		case Value::typ_variable:
-			output_c += current_value_node->data.dat_variable->name;
+		case Value::typVariable:
+			output_c += currentValueNode->data.datVariable->name;
 			break;
 	}
 }

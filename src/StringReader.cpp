@@ -5,10 +5,10 @@ StringReader::StringReader()
     str_pos = 0;
 }
 
-StringReader::StringReader(std::string input_string)
+StringReader::StringReader(std::string inputString)
 {
     str_pos = 0;
-    setString(input_string);
+    setString(inputString);
 }
 
 StringReader::~StringReader()
@@ -16,9 +16,9 @@ StringReader::~StringReader()
     //dtor
 }
 
-void StringReader::setString(std::string input_string)
+void StringReader::setString(std::string inputString)
 {
-    rd_string = input_string;
+    rd_string = inputString;
     end_reached = false;
 }
 

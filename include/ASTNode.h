@@ -14,10 +14,10 @@ class ASTNode
 {
     public:
         ASTNode();
-        ASTNode(ASTNode* incoming_parent);
+        ASTNode(ASTNode* incomingParent);
         virtual ~ASTNode();
 
-        int setParent(ASTNode* incoming_parent);
+        int setParent(ASTNode* incomingParent);
         int addChild(ASTNode* incoming_child);
         int removeChild(ASTNode* remove_child);
         int deleteChild(ASTNode* delete_child);

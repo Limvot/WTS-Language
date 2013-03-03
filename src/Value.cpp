@@ -4,150 +4,150 @@ Value::Value()
 {
     type = value;
     name = "value";
-    val_type = typ_void;
+    valType = typVoid;
 }
 
-Value::Value(ASTNode* incoming_parent)
+Value::Value(ASTNode* incomingParent)
 {
     type = value;
     name = "value_node";
-    val_type = typ_void;
-    parent = incoming_parent;
+    valType = typVoid;
+    parent = incomingParent;
 }
 
-Value::Value(void* in_void_ptr)
+Value::Value(void* inVoidPtr)
 {
     type = value;
     name = "value_void_ptr";
-    val_type = typ_void;
-    data.dat_void_ptr = in_void_ptr;
+    valType = typVoid;
+    data.datVoidPtr = inVoidPtr;
 }
 
-Value::Value(int in_int)
+Value::Value(int inInt)
 {
     type = value;
     name = "value_int";
-    val_type = typ_int;
-    data.dat_int = in_int;
+    valType = typInt;
+    data.datInt = inInt;
 }
 
-Value::Value(unsigned int in_uint)
+Value::Value(unsigned int inUInt)
 {
     type = value;
     name = "value_uint";
-    val_type = typ_uint;
-    data.dat_uint = in_uint;
+    valType = typUInt;
+    data.datUInt = inUInt;
 }
 
-Value::Value(float in_float)
+Value::Value(float inFloat)
 {
     type = value;
     name = "value_float";
-    val_type = typ_float;
-    data.dat_float = in_float;
+    valType = typFloat;
+    data.datFloat = inFloat;
 }
 
-Value::Value(double in_double)
+Value::Value(double inDouble)
 {
     type = value;
     name = "value_double";
-    val_type = typ_double;
-    data.dat_double = in_double;
+    valType = typDouble;
+    data.datDouble = inDouble;
 }
 
-Value::Value(bool in_bool)
+Value::Value(bool inBool)
 {
     type = value;
     name = "value_bool";
-    val_type = typ_bool;
-    data.dat_bool = in_bool;
+    valType = typBool;
+    data.datBool = inBool;
 }
 
-Value::Value(char in_char)
+Value::Value(char inChar)
 {
     type = value;
     name = "value_char";
-    val_type = typ_char;
-    data.dat_char = in_char;
+    valType = typChar;
+    data.datChar = inChar;
 }
 
-Value::Value(ASTNode_Variable* in_variable)
+Value::Value(ASTNode_Variable* inVariable)
 {
     type = value;
     name = "value_variable";
-    val_type = typ_variable;
-    data.dat_variable = in_variable;
+    valType = typVariable;
+    data.datVariable = inVariable;
 }
 
-Value::Value(ASTNode_Prototype* in_prototype) {
+Value::Value(ASTNode_Prototype* inPrototype) {
     type = value;
     name = "value_prototype";
-    val_type = typ_prototype;
-    data.dat_prototype = in_prototype;
+    valType = typPrototype;
+    data.datPrototype = inPrototype;
 }
 
-Value::Value(ASTNode_Call* in_call)
+Value::Value(ASTNode_Call* inCall)
 {
     type = value;
     name = "value_call";
-    val_type = typ_call;
-    data.dat_call = in_call;
+    valType = typCall;
+    data.datCall = inCall;
 }
 
-Value::Value(Block* in_block)
+Value::Value(Block* inBlock)
 {
     type = value;
     name = "value_block";
-    val_type = typ_block;
-    data.dat_block = in_block;
+    valType = typBlock;
+    data.datBlock = inBlock;
 }
 
 Value::~Value()
 {
-	switch (val_type)
+	switch (valType)
 	{
-		case typ_void:
+		case typVoid:
 			break;
 
-        case typ_variable:
-            if (data.dat_variable != NULL)
+        case typVariable:
+            if (data.datVariable != NULL)
             {
-                delete data.dat_variable;
-                data.dat_variable = NULL;
+                delete data.datVariable;
+                data.datVariable = NULL;
             }
             break;
 		
-    	case typ_object:
-			//if (data.dat_void_ptr != NULL)
+    	case typObject:
+			//if (data.datVoidPtr != NULL)
 				//BAD BAD BAD;
 			break;
 
-		case typ_function:
-			//if (data.dat_void_ptr != NULL)
+		case typFunction:
+			//if (data.datVoidPtr != NULL)
 				//BAD BAD BAD;
 			break;
 
-        case typ_prototype:
-            if (data.dat_prototype != NULL)
+        case typPrototype:
+            if (data.datPrototype != NULL)
             {
-                delete data.dat_prototype;
-                data.dat_prototype = NULL;
+                delete data.datPrototype;
+                data.datPrototype = NULL;
             }
             break;
 
-		case typ_call:
-			if (data.dat_call != NULL)
+		case typCall:
+			if (data.datCall != NULL)
             {
-				delete data.dat_call;
-                data.dat_call = NULL;
+				delete data.datCall;
+                data.datCall = NULL;
             }
 			break;
 
-        case typ_block:
-            if (data.dat_block != NULL)
+        case typBlock:
+            if (data.datBlock != NULL)
             {
-                delete data.dat_block;
-                data.dat_block = NULL;
+                delete data.datBlock;
+                data.datBlock = NULL;
             }
             break;
 
@@ -156,38 +156,38 @@ Value::~Value()
     //dtor
 }
 
-Value::value_type Value::isNumber(std::string input_string)
+Value::value_type Value::isNumber(std::string inputString)
 {
-    if (atoi(input_string.c_str()))
+    if (atoi(inputString.c_str()))
     {
-        return typ_int;
+        return typInt;
     } else {
-        if (atof(input_string.c_str()))
+        if (atof(inputString.c_str()))
         {
-            return typ_double;
+            return typDouble;
         }
     }
-    return typ_void;
+    return typVoid;
 }
 
-bool Value::makeNumber(std::string input_string)
+bool Value::makeNumber(std::string inputString)
 {
-    if (atoi(input_string.c_str()))
+    if (atoi(inputString.c_str()))
     {
-        val_type = typ_int;
-        data.dat_int = atoi(input_string.c_str());
+        valType = typInt;
+        data.datInt = atoi(inputString.c_str());
         return true;
     } else {
-        if (atof(input_string.c_str()))
+        if (atof(inputString.c_str()))
         {
-            val_type = typ_double;
-            data.dat_double = atof(input_string.c_str());
+            valType = typDouble;
+            data.datDouble = atof(inputString.c_str());
             return true;
         } else {
-            if (input_string == "0")                        //atoi returns 0 if not valid conversion, but what if the number is 0? Here we check for it
+            if (inputString == "0")                        //atoi returns 0 if not valid conversion, but what if the number is 0? Here we check for it
             {
-                val_type = typ_int;
-                data.dat_int = 0;
+                valType = typInt;
+                data.datInt = 0;
                 return true;
             }
         }

@@ -17,11 +17,11 @@ void Interpreter::interpret(AbstractSyntaxTree* tree)
 	{
 		for (unsigned int i = 0; i < tree->root->num_children; i++)
 		{
-			do_node(tree->root->children[i]);							//Go through each child of the root node
+			doNode(tree->root->children[i]);							//Go through each child of the root node
 		}
 	}
 	std::cout << "Calling main!\n";
-	do_node(new ASTNode_Call(tree->functions["main"]));	//Get the main function pointer, create a call to it, cast to node, then interpret it
+	doNode(new ASTNode_Call(tree->functions["main"]));	//Get the main function pointer, create a call to it, cast to node, then interpret it
 	std::cout << "Done with main!\n";
 }
 
@@ -32,7 +32,7 @@ std::string Interpreter::toString(int in)
 	return out_ss.str();
 }
 
-Value* Interpreter::do_node(ASTNode* currentNode)				//The prefix is added to each line added to the output, so that we can have multiple indents through recursive functions
+Value* Interpreter::doNode(ASTNode* currentNode)				//The prefix is added to each line added to the output, so that we can have multiple indents through recursive functions
 {
 	switch (currentNode->type)
 	{
@@ -50,20 +50,20 @@ Value* Interpreter::do_node(ASTNode* currentNode)				//The prefix is added to ea
 		case ASTNode::statement:
 		{
 
-			ASTNode_Statement* statement_node = dynamic_cast<ASTNode_Statement*> (currentNode);
-				switch (statement_node->statement_type)
+			ASTNode_Statement* statementNode = dynamic_cast<ASTNode_Statement*> (currentNode);
+				switch (statementNode->statementType)
 				{
 					case ASTNode_Statement::if_statement:
 					{
-						if (do_node(statement_node->condition)->data.dat_int)
-							do_node(statement_node->first_option);
+						if (doNode(statementNode->condition)->data.datInt)
+							doNode(statementNode->firstOption);
 						break;
 					}
 
 					case ASTNode_Statement::while_statement:
-						while(do_node(statement_node->condition)->data.dat_int)
+						while(doNode(statementNode->condition)->data.datInt)
 						{
-							do_node(statement_node->first_option);
+							doNode(statementNode->firstOption);
 						}
 						break;
 
@@ -76,7 +76,7 @@ Value* Interpreter::do_node(ASTNode* currentNode)				//The prefix is added to ea
 		case ASTNode::block:
 			for (unsigned int i = 0; i < currentNode->children.size(); i++)
 			{
-				do_node(currentNode->children[i]);
+				doNode(currentNode->children[i]);
 			}
 			break;
 
@@ -97,23 +97,23 @@ Value* Interpreter::do_node(ASTNode* currentNode)				//The prefix is added to ea
 
 		case ASTNode::value:
 		{
-			Value* current_value_node = dynamic_cast<Value*>(currentNode);
-			switch (current_value_node->val_type)
+			Value* currentValueNode = dynamic_cast<Value*>(currentNode);
+			switch (currentValueNode->valType)
 			{
-				case Value::typ_call:
-					return(do_node(current_value_node->data.dat_call));	//If a call, evaluate
+				case Value::typCall:
+					return(doNode(currentValueNode->data.datCall));	//If a call, evaluate
 					break;
 
-				case Value::typ_block:
-					return(do_node(current_value_node->data.dat_block));	//If a call, evaluate
+				case Value::typBlock:
+					return(doNode(currentValueNode->data.datBlock));	//If a call, evaluate
 					break;
 
-				case Value::typ_int:
-					return(current_value_node);									//If a int, return this one
+				case Value::typInt:
+					return(currentValueNode);									//If a int, return this one
 					break;
 
-				case Value::typ_variable:
-					return(do_node(current_value_node->data.dat_variable));	//If a variable, do it
+				case Value::typVariable:
+					return(doNode(currentValueNode->data.datVariable));	//If a variable, do it
 					break;
 			}
 			break;
@@ -128,84 +128,84 @@ Value* Interpreter::doCallNode(ASTNode* currentNode)
 {
 	//std::cout <<  "Interpreting a call\n";
 
-	ASTNode_Call* current_call_node = static_cast<ASTNode_Call*>(currentNode);
-	if (current_call_node->function->func_type == ASTNode_Prototype_Function::func_builtin)
+	ASTNode_Call* currentCallNode = static_cast<ASTNode_Call*>(currentNode);
+	if (currentCallNode->function->funcType == ASTNode_Prototype_Function::func_builtin)
 	{
 		//std::cout <<  "Interpreting a builtin function\n";
 
-		ASTNode_Prototype_Function_Builtin* current_builtin_function = static_cast<ASTNode_Prototype_Function_Builtin*>(current_call_node->function);
-		if (current_builtin_function->is_binary)																//Binary operator
+		ASTNode_Prototype_Function_Builtin* currentBuiltinFunction = static_cast<ASTNode_Prototype_Function_Builtin*>(currentCallNode->function);
+		if (currentBuiltinFunction->isBinary)																//Binary operator
 		{
 			//std::cout <<  "Interpreting a binary operator\n";
-			Value* current_value_node = NULL;
-			Value* first_param_value = NULL;
-			Value* second_param_value = NULL;
+			Value* currentValueNode = NULL;
+			Value* firstParamValue = NULL;
+			Value* secondParamValue = NULL;
 
-			if (current_builtin_function->operator_type != ASTNode_Prototype_Function_Builtin::assignment)	//If not an assignment, do evaluate. If it is an assignment, we assign to the first param not evaluate it
+			if (currentBuiltinFunction->operatorType != ASTNode_Prototype_Function_Builtin::assignment)	//If not an assignment, do evaluate. If it is an assignment, we assign to the first param not evaluate it
 			{
 				//First Param
-				current_value_node = current_call_node->parameters[0];
-				if (current_value_node)
+				currentValueNode = currentCallNode->parameters[0];
+				if (currentValueNode)
 				{
-					first_param_value = do_node(current_value_node);
+					firstParamValue = doNode(currentValueNode);
 				}
 				else
 					std::cout <<  "NO FIRST PARAMETER!\n";
 			}
 
 			//Second Param
-			current_value_node = current_call_node->parameters[1];
-			if (current_value_node)
+			currentValueNode = currentCallNode->parameters[1];
+			if (currentValueNode)
 			{
-				second_param_value = do_node(current_value_node);
+				secondParamValue = doNode(currentValueNode);
 			}
 			else
 				std::cout <<  "NO SECOND PARAMETER!\n";
 
 			//DO BUILTIN FUNCTIONS!!!!!
-			switch(current_builtin_function->operator_type)
+			switch(currentBuiltinFunction->operatorType)
 			{
 				case ASTNode_Prototype_Function_Builtin::assignment:
-					//if (current_call_node->parameters[0]->data.dat_variable->value != NULL)
-					//	delete current_call_node->parameters[0]->data.dat_variable->value;
-					current_call_node->parameters[0]->data.dat_variable->value = second_param_value;
+					//if (currentCallNode->parameters[0]->data.datVariable->value != NULL)
+					//	delete currentCallNode->parameters[0]->data.datVariable->value;
+					currentCallNode->parameters[0]->data.datVariable->value = secondParamValue;
 					break;
 
 				case ASTNode_Prototype_Function_Builtin::addition:
-					return new Value(first_param_value->data.dat_int + second_param_value->data.dat_int);	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
+					return new Value(firstParamValue->data.datInt + secondParamValue->data.datInt);	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 				
 				case ASTNode_Prototype_Function_Builtin::subtraction:
-					return new Value(first_param_value->data.dat_int - second_param_value->data.dat_int);	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
+					return new Value(firstParamValue->data.datInt - secondParamValue->data.datInt);	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 				
 				case ASTNode_Prototype_Function_Builtin::multiplication:
-					return new Value(first_param_value->data.dat_int * second_param_value->data.dat_int);	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
+					return new Value(firstParamValue->data.datInt * secondParamValue->data.datInt);	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 				
 				case ASTNode_Prototype_Function_Builtin::division:
-					return new Value(first_param_value->data.dat_int / second_param_value->data.dat_int);	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
+					return new Value(firstParamValue->data.datInt / secondParamValue->data.datInt);	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 				
 				case ASTNode_Prototype_Function_Builtin::exponent:
-					return new Value(first_param_value->data.dat_int ^ second_param_value->data.dat_int);	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
+					return new Value(firstParamValue->data.datInt ^ secondParamValue->data.datInt);	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 				
 				case ASTNode_Prototype_Function_Builtin::modulus:
-					return new Value(first_param_value->data.dat_int % second_param_value->data.dat_int);	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
+					return new Value(firstParamValue->data.datInt % secondParamValue->data.datInt);	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 				
 				case ASTNode_Prototype_Function_Builtin::equal:
-					return new Value(int(first_param_value->data.dat_int == second_param_value->data.dat_int));	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
+					return new Value(int(firstParamValue->data.datInt == secondParamValue->data.datInt));	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 				
 				case ASTNode_Prototype_Function_Builtin::not_equal:
-					return new Value(int(first_param_value->data.dat_int != second_param_value->data.dat_int));	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
+					return new Value(int(firstParamValue->data.datInt != secondParamValue->data.datInt));	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 				
 				case ASTNode_Prototype_Function_Builtin::greater_than:
-					return new Value(int(first_param_value->data.dat_int > second_param_value->data.dat_int));	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
+					return new Value(int(firstParamValue->data.datInt > secondParamValue->data.datInt));	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 				
 				case ASTNode_Prototype_Function_Builtin::less_than:
-					return new Value(int(first_param_value->data.dat_int < second_param_value->data.dat_int));	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
+					return new Value(int(firstParamValue->data.datInt < secondParamValue->data.datInt));	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 				
 				case ASTNode_Prototype_Function_Builtin::greater_than_or_equal:
-					return new Value(int(first_param_value->data.dat_int >= second_param_value->data.dat_int));	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
+					return new Value(int(firstParamValue->data.datInt >= secondParamValue->data.datInt));	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 				
 				case ASTNode_Prototype_Function_Builtin::less_than_or_equal:
-					return new Value(int(first_param_value->data.dat_int <=second_param_value->data.dat_int));	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
+					return new Value(int(firstParamValue->data.datInt <=secondParamValue->data.datInt));	//THIS IS BAD! Not only do we not account for other data types, we just assume it is that data type! Could be wierd with the fact that data is a union....
 						
 				default:
 					std::cout <<  "Hmm?! No builtin operator that matches!\n";
@@ -217,21 +217,21 @@ Value* Interpreter::doCallNode(ASTNode* currentNode)
 			//std::cout <<  "Interpreting a unary operator\n";
 
 			//Only param
-			Value* current_value_node = current_call_node->parameters[0];
-			Value* first_param_value;
-			if (current_value_node)
+			Value* currentValueNode = currentCallNode->parameters[0];
+			Value* firstParamValue;
+			if (currentValueNode)
 			{
-				first_param_value = do_node(current_value_node);
+				firstParamValue = doNode(currentValueNode);
 			}
 			else
 				std::cout <<  "NO FIRST PARAMETER FOR UNARY\n";
 
 			//DO BUILTIN FUNCTIONS!!!!!!
-			switch(current_builtin_function->operator_type)
+			switch(currentBuiltinFunction->operatorType)
 			{
 				case ASTNode_Prototype_Function_Builtin::print:
 				{
-					std::string toPrint = toString(first_param_value->data.dat_int) + "\n";
+					std::string toPrint = toString(firstParamValue->data.datInt) + "\n";
 					std::cout << toPrint;
 					break;
 				}
@@ -244,24 +244,23 @@ Value* Interpreter::doCallNode(ASTNode* currentNode)
 
 	} else {																									//A user function!
 
-		//std::cout <<  "Interperting a custom function named " << current_call_node->function->name << std::endl;
+		//std::cout <<  "Interperting a custom function named " << currentCallNode->function->name << std::endl;
 
-		for (unsigned int i = 0; i < current_call_node->parameters.size(); i++)
+		for (unsigned int i = 0; i < currentCallNode->parameters.size(); i++)
 		{
-			Value* current_value_node = current_call_node->parameters[i];
-			if (current_value_node)
+			Value* currentValueNode = currentCallNode->parameters[i];
+			if (currentValueNode)
 			{
-				//CUSTOM FUNCTIONS DON'T ALLOW PARAMETERS YET
-				do_node(current_value_node);
-				//CUSTOM FUNCTIONS DON'T ALLOW PARAMETERS YET
+				//function's parameters are values that are variable prototypes, get the actual variable and set it's value to be the call's parameter's value.
+				static_cast<ASTNode_Prototype_Variable*>(currentCallNode->function->parameters[i]->data.datPrototype)->variable->value = doNode(currentValueNode);
 			}
 			else
 				std::cout <<  "BAD PARAMETER!!!!!\n";
 		}
 		//Do regular functions!
 		//std::cout <<  "Interpreting the custom function's body\n";
-		do_node(current_call_node->function->function_body);
-		if (current_call_node->function->returnValue)
-			return do_node(current_call_node->function->returnValue);
+		doNode(currentCallNode->function->function_body);
+		if (currentCallNode->function->returnValue)
+			return doNode(currentCallNode->function->returnValue);
 	}
 }

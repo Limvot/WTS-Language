@@ -9,9 +9,9 @@ class StringReader
 {
     public:
         StringReader();
-        StringReader(std::string input_string);
+        StringReader(std::string inputString);
         virtual ~StringReader();
-        void setString(std::string input_string);
+        void setString(std::string inputString);
         std::string word(bool truncateEnd = true);
         std::string line(bool truncateEnd = true);
         std::string getTokens(std::vector<std::string> get_chars, bool truncateEnd = true);

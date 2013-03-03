@@ -8,9 +8,9 @@ ASTNode::ASTNode()
     type = basic;
 }
 
-ASTNode::ASTNode(ASTNode* incoming_parent)
+ASTNode::ASTNode(ASTNode* incomingParent)
 {
-    parent = incoming_parent;
+    parent = incomingParent;
     num_children = 0;
 }
 
@@ -19,11 +19,11 @@ ASTNode::~ASTNode()
     children.clear();                               //Delete all our children
 }
 
-int ASTNode::setParent(ASTNode* incoming_parent)
+int ASTNode::setParent(ASTNode* incomingParent)
 {
     if (parent)
         parent->removeChild(this);                  //Remove ourselves from parent, if it exists
-    parent = incoming_parent;
+    parent = incomingParent;
     return 0;
 }
 

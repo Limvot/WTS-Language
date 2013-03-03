@@ -8,6 +8,7 @@
 #include "Value.h"
 #include "ASTNode_Variable.h"
 #include "ASTNode_Prototype_Function.h"
+#include "ASTNode_Prototype_Variable.h"
 #include "ASTNode_Prototype_Function_Builtin.h"
 #include "ASTNode_Call.h"
 #include "AbstractSyntaxTree.h"
@@ -28,7 +29,7 @@ class Interpreter
         std::string toString(int in);
 
         void interpret(AbstractSyntaxTree* tree);
-        Value* do_node(ASTNode* currentNode);
+        Value* doNode(ASTNode* currentNode);
         Value* doCallNode(ASTNode* currentNode);
         std::string getOutput();
 
