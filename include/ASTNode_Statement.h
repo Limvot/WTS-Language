@@ -5,6 +5,8 @@
 #include <Value.h>
 #include <Block.h>
 
+class Value;
+
 class ASTNode_Statement : public ASTNode
 {
     public:

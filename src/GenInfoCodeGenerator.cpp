@@ -167,6 +167,10 @@ void GenInfoCodeGenerator::doValueNode(ASTNode* currentNode, std::string prefix)
 	{
 		output_info += prefix + "\tPrototype's name: " + currentValueNode->data.datPrototype->name + "\n";
 		doNode(currentValueNode->data.datPrototype, prefix+"\t");
+	} else if (currentValueNode->valType == Value::typStatement)
+	{
+		output_info += prefix + "\tValue contained Statement";
+		doNode(currentValueNode->data.datStatement, prefix+"\t");
 	} else if (currentValueNode->valType == Value::typCall)
 	{
 		output_info += prefix + "\tFunction called's name: " + currentValueNode->data.datCall->function->name + "\n";

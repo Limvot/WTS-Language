@@ -101,11 +101,15 @@ Value* Interpreter::doNode(ASTNode* currentNode)				//The prefix is added to eac
 			switch (currentValueNode->valType)
 			{
 				case Value::typCall:
-					return(doNode(currentValueNode->data.datCall));	//If a call, evaluate
+					return(doNode(currentValueNode->data.datCall));				//If a call, evaluate
+					break;
+
+				case Value::typStatement:
+					return(doNode(currentValueNode->data.datStatement));
 					break;
 
 				case Value::typBlock:
-					return(doNode(currentValueNode->data.datBlock));	//If a call, evaluate
+					return(doNode(currentValueNode->data.datBlock));
 					break;
 
 				case Value::typInt:
@@ -113,7 +117,7 @@ Value* Interpreter::doNode(ASTNode* currentNode)				//The prefix is added to eac
 					break;
 
 				case Value::typVariable:
-					return(doNode(currentValueNode->data.datVariable));	//If a variable, do it
+					return(doNode(currentValueNode->data.datVariable));			//If a variable, do it
 					break;
 			}
 			break;

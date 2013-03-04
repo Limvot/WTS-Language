@@ -86,6 +86,13 @@ Value::Value(ASTNode_Prototype* inPrototype) {
     data.datPrototype = inPrototype;
 }
 
+Value::Value(ASTNode_Statement* inStatement) {
+    type = value;
+    name = "value_statement";
+    valType = typStatement;
+    data.datStatement = inStatement;
+}
+
 Value::Value(ASTNode_Call* inCall)
 {
     type = value;

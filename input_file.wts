@@ -108,6 +108,22 @@ def int otherFunc
 	return returnLifeSecret 
 }
 
+def int factorial int facNum
+{
+	int currentNum
+	= currentNum facNum
+	= facNum - facNum 1
+
+	while > facNum 0
+	{
+		= currentNum * currentNum facNum
+		= facNum - facNum 1
+	}
+
+	return currentNum
+
+}
+
 def int main
 {
 	#print_hello_func
@@ -131,6 +147,8 @@ def int main
 	print addNumbers 3 7
 
 	print 234
+
+	print factorial 7
 
 	return test
 }

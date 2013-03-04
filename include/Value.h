@@ -5,11 +5,14 @@
 
 #include <ASTNode.h>
 #include <ASTNode_Call.h>
+#include <ASTNode_Prototype.h>
+#include <ASTNode_Statement.h>
 #include <ASTNode_Variable.h>
 #include <Block.h>
 
 
-class ASTNode_Call; //Fix the circular dependency, close the loop.
+class ASTNode_Call;
+class ASTNode_Statement;
 class ASTNode_Variable;
 
 class Value : public ASTNode
@@ -25,6 +28,7 @@ class Value : public ASTNode
         Value(bool inBool);
         Value(char inChar);
         Value(ASTNode_Prototype* inPrototype);
+        Value(ASTNode_Statement* inStatement);
         Value(ASTNode_Call* inCall);
         Value(ASTNode_Variable* inVariable);
         Value(Block* inBlock);
@@ -42,6 +46,7 @@ class Value : public ASTNode
                             typObject,
                             typFunction,
                             typPrototype,
+                            typStatement,
                             typCall,
                             typBlock }  valType;
         union  {void* datVoidPtr;
@@ -52,9 +57,8 @@ class Value : public ASTNode
                 bool  datBool;
                 char datChar;
                 ASTNode_Variable* datVariable;
-                //Figure out how to add support for object instances
-                //Figure out how to add support for function pointers
                 ASTNode_Prototype* datPrototype;
+                ASTNode_Statement* datStatement;
                 ASTNode_Call* datCall;
                 Block* datBlock;} data;
 

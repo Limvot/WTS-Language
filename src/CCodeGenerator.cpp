@@ -344,6 +344,10 @@ void CCodeGenerator::doValueNode(ASTNode* currentNode, std::string prefix, Value
 			doNode(currentValueNode->data.datPrototype, prefix);
 			break;
 
+		case Value::typStatement:
+			doNode(currentValueNode->data.datStatement, prefix);
+			break;
+
 		case Value::typCall:
 			doNode(currentValueNode->data.datCall, prefix);
 			break;
