@@ -56,6 +56,7 @@ bool AbstractSyntaxTree::ascendToUpperBlock() {		//This class does not use the a
 	return(false);
 }
 bool AbstractSyntaxTree::setCurrentNode(ASTNode* setNode) {
-	currentNode = setNode;  
+	currentNode = setNode;
+	return true;
 }
 
